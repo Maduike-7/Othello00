@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1394865060340934037}
   - component: {fileID: 1498712361699203461}
-  m_Layer: 9
+  - component: {fileID: 7489944642406779685}
+  m_Layer: 8
   m_Name: Disc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,6 +48,18 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7489944642406779685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394865060340934025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e88c308fe2da8814783662a5ba04de2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6456150013665586713
 GameObject:
   m_ObjectHideFlags: 0
