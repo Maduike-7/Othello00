@@ -202,13 +202,14 @@ public class Game : MonoBehaviour
 
     void FlipInDirection((int row, int col) coordinate, Vector3Int direction, int flipLength)
     {
-        //start Disc.FlipUponAxis coroutine for all discs that should be flipped
+        //start Disc.FlipUponAxis() for all discs that should be flipped
         for (int i = 1; i <= flipLength; i++)
         {
             Vector3 flipAxis = Vector3.Cross(direction, transform.eulerAngles.x == 0 ? Vector3.forward : Vector3.back);
             gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis);
 
             //increment/decrement disc counts accordingly
+            //(player always plays as black)
             if (playerTurn)
             {
                 blackDiscCount++;
@@ -247,9 +248,11 @@ public class Game : MonoBehaviour
 
                 if (!playerTurn)
                 {
+                    hintDisc.SetActive(false);
                     StartCoroutine(RunCPU());
                 }
             }
+            //if a valid move doesn't exist, increment number of turns passed and call this function again
             else
             {
                 turnsPassed++;
@@ -257,7 +260,7 @@ public class Game : MonoBehaviour
             }
         }
         //game is over when turn has been passed twice without a move being made
-        //(checking if the board is full is not enough, because there exists board states where the board isn't filled and neither player can make a move)
+        //(checking if the board is full is not good enough, because there exists board states where the board isn't filled and neither player can make a move)
         else
         {
             gameOver = true;
@@ -292,23 +295,22 @@ public class Game : MonoBehaviour
 
     IEnumerator RunCPU()
     {
-        //SortValidMoves();
-        //(int row, int col) selectedCoordinate = FindCPUMove(cpuDifficulty);
-        (int row, int col) selectedCoordinate = validSpaces[Random.Range(0, validSpaces.Count)].coordinate;
+        SortValidMoves();
+        (int row, int col) selectedCoordinate = FindCPUMove(cpuDifficulty);
 
         //wait for a longer time the more discs are on the game board (to add a bit of R E A L I S M)
         float cpuDelay = 1 + (whiteDiscCount + blackDiscCount - 4) / 60f;
         yield return new WaitForSeconds(cpuDelay);
-
+        
         FindValidDirections(playerTurn, selectedCoordinate);
         StartCoroutine(MakeMove(selectedCoordinate));
     }
-
-    #region TO-DO
+    
     void SortValidMoves()
     {
-        var validCornerSpaces = validSpaces.FindAll(i => corners.Contains(i.coordinate));
-        var validEdgeSpaces = validSpaces.FindAll(i => edges.Contains(i.coordinate));
+        validSpaces = validSpaces.OrderByDescending(i => corners.Contains(i.coordinate))
+                                  .ThenByDescending(i => edges.Contains(i.coordinate))
+                                  .ThenByDescending(i => i.totalFlipCount).ToList();
     }
 
     (int row, int col) FindCPUMove(CPUDifficulty difficulty)
@@ -316,19 +318,33 @@ public class Game : MonoBehaviour
         switch (difficulty)
         {
             case CPUDifficulty.Easy:
-                return (-1, -1);
+                //randomize move choice between all moves that flips fewest discs
+                var possibleMoves = validSpaces.SkipWhile(i => i.totalFlipCount != validSpaces.Last().totalFlipCount);
+
+                //if (number of worst possible moves) is greater than (number of valid spaces / number of CPU difficulties)...
+                if (possibleMoves.Count() > validSpaces.Count / difficultyCount)
+                {
+                    //return random selection from possibleMoves
+                    return possibleMoves.ElementAt(Random.Range(0, possibleMoves.Count())).coordinate;
+                }
+                else
+                {
+                    //return random selection from last (1 / number of CPU difficulties) of validSpaces
+                    //i.e. if there are 3 different CPU difficulties, return random move from the last third of validSpaces
+                    return validSpaces[Random.Range(validSpaces.Count * ((difficultyCount - 1) / difficultyCount), validSpaces.Count)].coordinate;
+                }
 
             case CPUDifficulty.Normal:
-                return (-1, -1);
+                return validSpaces[validSpaces.Count / 2].coordinate;
 
             case CPUDifficulty.Hard:
-                return (-1, -1);
+                return validSpaces[0].coordinate;
 
             default:
+                //this should never happen
                 return (-1, -1);
         }
     }
-    #endregion
 
     void UpdateHints()
     {
@@ -358,6 +374,11 @@ public class Game : MonoBehaviour
         int row = Mathf.FloorToInt(hit.point.y / hit.collider.bounds.extents.y * (BOARD_SIZE / 2) + (BOARD_SIZE / 2));
         int col = Mathf.FloorToInt(hit.point.x / hit.collider.bounds.extents.x * (BOARD_SIZE / 2) + (BOARD_SIZE / 2));
         return (row, col);
+    }
+
+    public void BackToMainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
     }
 
     #region DEBUG
@@ -392,8 +413,6 @@ public class Game : MonoBehaviour
         {
             print(checkDirections[i] + " -> " + validDirections[i]);
         }
-
-        PauseEditor();
     }
 
     void DebugValidSpaces()
@@ -404,8 +423,6 @@ public class Game : MonoBehaviour
         {
             print(item);
         }
-
-        PauseEditor();
     }
 
     void PauseEditor()
