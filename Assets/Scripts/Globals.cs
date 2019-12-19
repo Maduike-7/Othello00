@@ -28,6 +28,6 @@ public static class Globals
         Hard
     }
     public static CPUDifficulty cpuDifficulty = CPUDifficulty.Easy;
-    public static readonly int difficultyCount = System.Enum.GetNames(typeof(CPUDifficulty)).Length;
+    public static readonly int cpuDifficultyCount = System.Enum.GetNames(typeof(CPUDifficulty)).Length;
 
 }

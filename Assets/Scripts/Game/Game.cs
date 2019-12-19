@@ -306,11 +306,14 @@ public class Game : MonoBehaviour
         StartCoroutine(MakeMove(selectedCoordinate));
     }
     
+    //order validSpaces[] by whether or not item appears in corners[], then by whether or not item appears in edges[], then by item's total number of discs to flip
     void SortValidMoves()
     {
-        validSpaces = validSpaces.OrderByDescending(i => corners.Contains(i.coordinate))
-                                  .ThenByDescending(i => edges.Contains(i.coordinate))
-                                  .ThenByDescending(i => i.totalFlipCount).ToList();
+        DebugValidSpaces();
+        validSpaces = validSpaces.OrderBy(i => corners.Contains(i.coordinate))
+                                  .ThenBy(i => edges.Contains(i.coordinate))
+                                  .ThenBy(i => i.totalFlipCount).ToList();
+        DebugValidSpaces();
     }
 
     (int row, int col) FindCPUMove(CPUDifficulty difficulty)
@@ -319,19 +322,18 @@ public class Game : MonoBehaviour
         {
             case CPUDifficulty.Easy:
                 //randomize move choice between all moves that flips fewest discs
-                var possibleMoves = validSpaces.SkipWhile(i => i.totalFlipCount != validSpaces.Last().totalFlipCount);
+                var possibleMoves = validSpaces.TakeWhile(i => i.totalFlipCount == validSpaces[0].totalFlipCount);
 
                 //if (number of worst possible moves) is greater than (number of valid spaces / number of CPU difficulties)...
-                if (possibleMoves.Count() > validSpaces.Count / difficultyCount)
+                if (possibleMoves.Count() > validSpaces.Count / cpuDifficultyCount)
                 {
                     //return random selection from possibleMoves
                     return possibleMoves.ElementAt(Random.Range(0, possibleMoves.Count())).coordinate;
                 }
                 else
                 {
-                    //return random selection from last (1 / number of CPU difficulties) of validSpaces
-                    //i.e. if there are 3 different CPU difficulties, return random move from the last third of validSpaces
-                    return validSpaces[Random.Range(validSpaces.Count * ((difficultyCount - 1) / difficultyCount), validSpaces.Count)].coordinate;
+                    //return random selection from a "portion" of validSpaces
+                    return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
                 }
 
             case CPUDifficulty.Normal:
