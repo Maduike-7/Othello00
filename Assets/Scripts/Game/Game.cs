@@ -8,6 +8,8 @@ public class Game : MonoBehaviour
 {
     [SerializeField] Camera mainCam;
     [SerializeField] HUD hud;
+    //[SerializeField] AudioController audioController;
+
     [SerializeField] Transform discHolder;
     [SerializeField] GameObject hintDisc;
 

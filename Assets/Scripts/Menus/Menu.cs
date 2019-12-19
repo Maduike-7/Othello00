@@ -8,7 +8,7 @@ public class Menu : MonoBehaviour
     [SerializeField] TextMeshProUGUI titleText;
     protected Canvas thisMenu;
 
-    void Awake()
+    protected virtual void Awake()
     {
         thisMenu = GetComponent<Canvas>();
     }
