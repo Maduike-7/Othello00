@@ -4,7 +4,8 @@ using UnityEngine;
 
 public static class Globals
 {
-    //game state
+    #region Game
+
     public static bool gameOver;
     public static bool gamePaused;
 
@@ -12,26 +13,17 @@ public static class Globals
     public static int blackDiscCount = 2;
     public static int whiteDiscCount = 2;
 
-    //game settings
-    public static bool hintsEnabled = true;
-    public static bool soundEnabled = true;
-
-    //game logic
     public static readonly int blackDiscLayer = LayerMask.NameToLayer("Black Disc");
     public static readonly int whiteDiscLayer = LayerMask.NameToLayer("White Disc");
 
     public const float FLIP_ANIMATION_DURATION = 0.5f;
 
-    //CPU
-    public enum CPUDifficulty
-    {
-        Easy,
-        Normal,
-        Hard
-    }
-    public static CPUDifficulty cpuDifficulty = CPUDifficulty.Easy;
-    public static readonly int cpuDifficultyCount = System.Enum.GetNames(typeof(CPUDifficulty)).Length;
+    #endregion
+    
+    #region Settings
 
+    public static bool hintsEnabled = true;
+    public static bool soundEnabled = true;
 
     public static void ToggleHints()
     {
@@ -50,4 +42,19 @@ public static class Globals
         cpuDifficulty = (CPUDifficulty)newValue;
         PlayerPrefs.SetInt("CPU difficulty", newValue);
     }
+
+    #endregion
+
+    #region CPU
+
+    public enum CPUDifficulty
+    {
+        Easy,
+        Normal,
+        Hard
+    }
+    public static CPUDifficulty cpuDifficulty = CPUDifficulty.Easy;
+    public static readonly int cpuDifficultyCount = System.Enum.GetNames(typeof(CPUDifficulty)).Length; 
+
+    #endregion
 }
