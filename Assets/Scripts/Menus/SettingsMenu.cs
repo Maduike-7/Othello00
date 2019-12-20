@@ -33,12 +33,12 @@ public class SettingsMenu : Menu
         cpuDifficulty = (CPUDifficulty)cpuDifficultyDropdown.value;
     }
 
-    public void OnHintsToggled()
+    public void OnToggleHints()
     {
         ToggleHints();
     }
 
-    public void OnSoundToggled()
+    public void OnToggleSound()
     {
         ToggleSound();
     }
