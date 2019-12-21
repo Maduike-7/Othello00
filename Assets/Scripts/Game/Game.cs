@@ -6,12 +6,16 @@ using static Globals;
 
 public class Game : MonoBehaviour
 {
+    [Header("Object references")]
     [SerializeField] Camera mainCam;
     [SerializeField] HUD hud;
     //[SerializeField] AudioController audioController;
 
     [SerializeField] Transform discHolder;
     [SerializeField] GameObject hintDisc;
+
+    [Header("CPU data")]
+    [SerializeField] AnimationCurve[] moveSelectionWeights;
 
     bool inputEnabled = true;
 
@@ -114,14 +118,11 @@ public class Game : MonoBehaviour
             {
                 (int row, int col) selectedCoordinate = WorldToBoardCoordinates(hit);
 
-                //if disc at selected coordinate is inactive
-                if (!gameBoard[selectedCoordinate.row, selectedCoordinate.col].activeInHierarchy)
+                //if disc at selected coordinate is inactive, and if selectedCoordinate exists in validSpaces[], make move
+                if (!gameBoard[selectedCoordinate.row, selectedCoordinate.col].activeInHierarchy && validSpaces.Any(item => item.coordinate == selectedCoordinate))
                 {
-                    if (validSpaces.Any(item => item.coordinate == selectedCoordinate))
-                    {
-                        FindValidDirections(playerTurn, selectedCoordinate);
-                        StartCoroutine(MakeMove(selectedCoordinate));
-                    }
+                    FindValidDirections(playerTurn, selectedCoordinate);
+                    StartCoroutine(MakeMove(selectedCoordinate));
                 }
             }
         }
@@ -131,7 +132,7 @@ public class Game : MonoBehaviour
     {
         validDirections.Clear();
 
-        //call CheckInDirection for all 8 directions in checkDirections[], and store result in validDirections[]
+        //call CheckInDirection for all 8 directions in checkDirections[], and store result as (valid check direction, amount to flip) in validDirections[]
         for (int i = 0; i < checkDirections.Length; i++)
         {
             if (coordinate.row + checkDirections[i].y >= 0 && coordinate.row + checkDirections[i].y < BOARD_SIZE &&
@@ -146,6 +147,7 @@ public class Game : MonoBehaviour
         }
     }
 
+    //raycast from <coordinate's world space> in <direction> to check for discs depending on <playerTurn>
     (bool isValid, int flipCount) CheckInDirection(bool playerTurn, (int row, int col) coordinate, Vector3 direction)
     {
         Vector3 rayOrigin = gameBoard[coordinate.row, coordinate.col].transform.position;
@@ -182,7 +184,12 @@ public class Game : MonoBehaviour
     IEnumerator MakeMove((int row, int col) coordinate)
     {
         gameBoard[coordinate.row, coordinate.col].SetActive(true);
-        FlipDiscs(coordinate);
+
+        //call FlipInDirection() for all items in validDirections[]
+        for (int i = 0; i < validDirections.Count; i++)
+        {
+            FlipInDirection(coordinate, validDirections[i].direction, validDirections[i].flipCount);
+        }
 
         //disable input until flip animation finishes
         inputEnabled = false;
@@ -193,18 +200,9 @@ public class Game : MonoBehaviour
         PassTurn(ref turnsPassed);
     }
 
-    void FlipDiscs((int row, int col) coordinate)
-    {
-        //call FlipInDirection() for all items in validDirections[]
-        for (int i = 0; i < validDirections.Count; i++)
-        {
-            FlipInDirection(coordinate, validDirections[i].direction, validDirections[i].flipCount);
-        }
-    }
-
+    //start Disc.FlipUponAxis() coroutine for all discs that should be flipped
     void FlipInDirection((int row, int col) coordinate, Vector3Int direction, int flipLength)
     {
-        //start Disc.FlipUponAxis() for all discs that should be flipped
         for (int i = 1; i <= flipLength; i++)
         {
             Vector3 flipAxis = Vector3.Cross(direction, transform.eulerAngles.x == 0 ? Vector3.forward : Vector3.back);
@@ -225,6 +223,7 @@ public class Game : MonoBehaviour
         }
     }
 
+    //handle events that happen between turns
     void PassTurn(ref int _turnsPassed)
     {
         int turnsPassed = _turnsPassed;
@@ -240,10 +239,11 @@ public class Game : MonoBehaviour
                 }
             }
 
+            //pass turn over; look for validSpaces given <playerTurn> in new board state
             playerTurn = !playerTurn;
             FindValidSpaces(playerTurn);
 
-            //if a valid move exists...
+            //if at least 1 valid move exists...
             if (validSpaces.Count > 0)
             {
                 turnsPassed = 0;
@@ -262,7 +262,7 @@ public class Game : MonoBehaviour
             }
         }
         //game is over when turn has been passed twice without a move being made
-        //(checking if the board is full is not good enough, because there exists board states in which the board isn't filled and neither player can make a move)
+        //(checking if board is full is not good enough, because there exists board states in which it isn't filled and neither player can make a move)
         else
         {
             gameOver = true;
@@ -272,6 +272,7 @@ public class Game : MonoBehaviour
     }
 
     //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
+    //(true = player's turn = black; false = CPU's turn = white)
     void FindValidSpaces(bool playerTurn)
     {
         validSpaces.Clear();
@@ -297,10 +298,15 @@ public class Game : MonoBehaviour
 
     IEnumerator RunCPU()
     {
-        SortValidMoves();
-        (int row, int col) selectedCoordinate = FindCPUMove(cpuDifficulty);
+        //order validSpaces[] by whether or not item exists in corners[], then by whether or not item exists in edges[], then by item's total number of discs to flip
+        validSpaces = validSpaces.OrderBy(i => corners.Contains(i.coordinate))
+                          .ThenBy(i => edges.Contains(i.coordinate))
+                          .ThenBy(i => i.totalFlipCount).ToList();
+
+        (int row, int col) selectedCoordinate = FindCPUMove();
 
         //wait for a longer time the more discs are on the game board (to add a bit of R E A L I S M)
+        //wait for ~1s at start of game, up to ~2s by end of game
         float cpuDelay = 1 + (whiteDiscCount + blackDiscCount - 4) / 60f;
         yield return new WaitForSeconds(cpuDelay);
 
@@ -308,49 +314,10 @@ public class Game : MonoBehaviour
         StartCoroutine(MakeMove(selectedCoordinate));
     }
 
-    //order validSpaces[] by whether or not item appears in corners[], then by whether or not item appears in edges[], then by item's total number of discs to flip
-    void SortValidMoves()
+    //get coordinates of CPU's next move, based on <cpuDifficulty>
+    (int row, int col) FindCPUMove()
     {
-        DebugValidSpaces();
-        validSpaces = validSpaces.OrderBy(i => corners.Contains(i.coordinate))
-                                  .ThenBy(i => edges.Contains(i.coordinate))
-                                  .ThenBy(i => i.totalFlipCount).ToList();
-        DebugValidSpaces();
-    }
-
-    (int row, int col) FindCPUMove(CPUDifficulty difficulty)
-    {
-        switch (difficulty)
-        {
-            case CPUDifficulty.Easy:
-                //randomize move choice between all moves that flips fewest discs
-                var possibleMoves = validSpaces.TakeWhile(i => i.totalFlipCount == validSpaces[0].totalFlipCount);
-
-                //if (number of worst possible moves) is greater than (number of valid spaces / number of CPU difficulties)...
-                if (possibleMoves.Count() > validSpaces.Count / cpuDifficultyCount)
-                {
-                    //return random selection from possibleMoves
-                    return possibleMoves.ElementAt(Random.Range(0, possibleMoves.Count())).coordinate;
-                }
-                //otherwise return random selection from first "portion" of validSpaces
-                //a portion is defined by (1 / number of CPU difficulties)
-                else
-                {
-                    return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
-                }
-
-            case CPUDifficulty.Normal:
-                //return random selection from second portion of validSpaces
-                return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
-
-            case CPUDifficulty.Hard:
-                //return random selection from third portion of validSpaces
-                return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
-
-            default:
-                //this should never happen
-                return (-1, -1);
-        }
+        return (-1, -1);
     }
 
     void UpdateHints()
@@ -374,7 +341,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    //return row-column coordinates from [0, BOARD_SIZE - 1] based on (hit.point.xy / hit.collider.bounds.extents.xy)
+    //get row-column coordinates from [0, BOARD_SIZE - 1] based on (hit.point.xy / hit.collider.bounds.extents.xy)
     //bottom-left: (0, 0); top-right: (BOARD_SIZE - 1, BOARD_SIZE - 1)
     (int row, int col) WorldToBoardCoordinates(RaycastHit hit)
     {

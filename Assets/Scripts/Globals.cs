@@ -39,22 +39,16 @@ public static class Globals
 
     public static void ChangeCPUDifficulty(int newValue)
     {
-        cpuDifficulty = (CPUDifficulty)newValue;
-        PlayerPrefs.SetInt("CPU difficulty", newValue);
+        cpuDifficulty = Mathf.Clamp(newValue, 0, MAX_CPU_DIFFICULTY);
+        PlayerPrefs.SetInt("CPU difficulty", cpuDifficulty);
     }
 
     #endregion
 
     #region CPU
 
-    public enum CPUDifficulty
-    {
-        Easy,
-        Normal,
-        Hard
-    }
-    public static CPUDifficulty cpuDifficulty = CPUDifficulty.Easy;
-    public static readonly int cpuDifficultyCount = System.Enum.GetNames(typeof(CPUDifficulty)).Length; 
+    public static int cpuDifficulty;
+    public const int MAX_CPU_DIFFICULTY = 2; 
 
     #endregion
 }
