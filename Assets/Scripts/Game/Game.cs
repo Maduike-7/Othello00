@@ -117,7 +117,7 @@ public class Game : MonoBehaviour
                 //if disc at selected coordinate is inactive
                 if (!gameBoard[selectedCoordinate.row, selectedCoordinate.col].activeInHierarchy)
                 {
-                    if (validSpaces.Any(item => item.coordinate.Equals(selectedCoordinate)))
+                    if (validSpaces.Any(item => item.coordinate == selectedCoordinate))
                     {
                         FindValidDirections(playerTurn, selectedCoordinate);
                         StartCoroutine(MakeMove(selectedCoordinate));
@@ -262,7 +262,7 @@ public class Game : MonoBehaviour
             }
         }
         //game is over when turn has been passed twice without a move being made
-        //(checking if the board is full is not good enough, because there exists board states where the board isn't filled and neither player can make a move)
+        //(checking if the board is full is not good enough, because there exists board states in which the board isn't filled and neither player can make a move)
         else
         {
             gameOver = true;
@@ -303,11 +303,11 @@ public class Game : MonoBehaviour
         //wait for a longer time the more discs are on the game board (to add a bit of R E A L I S M)
         float cpuDelay = 1 + (whiteDiscCount + blackDiscCount - 4) / 60f;
         yield return new WaitForSeconds(cpuDelay);
-        
+
         FindValidDirections(playerTurn, selectedCoordinate);
         StartCoroutine(MakeMove(selectedCoordinate));
     }
-    
+
     //order validSpaces[] by whether or not item appears in corners[], then by whether or not item appears in edges[], then by item's total number of discs to flip
     void SortValidMoves()
     {
@@ -332,17 +332,20 @@ public class Game : MonoBehaviour
                     //return random selection from possibleMoves
                     return possibleMoves.ElementAt(Random.Range(0, possibleMoves.Count())).coordinate;
                 }
+                //otherwise return random selection from first "portion" of validSpaces
+                //a portion is defined by (1 / number of CPU difficulties)
                 else
                 {
-                    //return random selection from a "portion" of validSpaces
                     return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
                 }
 
             case CPUDifficulty.Normal:
-                return validSpaces[validSpaces.Count / 2].coordinate;
+                //return random selection from second portion of validSpaces
+                return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
 
             case CPUDifficulty.Hard:
-                return validSpaces[0].coordinate;
+                //return random selection from third portion of validSpaces
+                return validSpaces[Random.Range(validSpaces.Count * (int)difficulty / cpuDifficultyCount, validSpaces.Count * ((int)difficulty + 1) / cpuDifficultyCount)].coordinate;
 
             default:
                 //this should never happen

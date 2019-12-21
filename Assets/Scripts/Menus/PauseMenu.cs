@@ -26,6 +26,7 @@ public class PauseMenu : Menu
         StartCoroutine(ResumeGame());
     }
 
+    //this is a coroutine because otherwise, clicking the resume button would register a click on the game board on the same frame
     IEnumerator ResumeGame()
     {
         thisMenu.enabled = false;
