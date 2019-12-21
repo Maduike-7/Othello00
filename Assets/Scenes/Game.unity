@@ -4235,28 +4235,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCam: {fileID: 963194227}
   hud: {fileID: 1499289776}
-  discHolder: {fileID: 1600074512}
+  discParent: {fileID: 1600074512}
   hintDisc: {fileID: 1150474554}
-  moveSelectionWeights:
+  cpuDifficultyCurves:
   - serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: -6107.606
-      tangentMode: 1
-      weightedMode: 3
+      inSlope: -1
+      outSlope: -1
+      tangentMode: 34
+      weightedMode: 0
       inWeight: 0
-      outWeight: 0.00016376445
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: -1
+      outSlope: -1
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -4266,30 +4266,30 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 3
-      inWeight: 0.33333334
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 0.5
       value: 1
-      inSlope: 5311.4624
-      outSlope: -6647.7456
-      tangentMode: 1
-      weightedMode: 3
-      inWeight: 0.00037658215
-      outWeight: 0.00030088425
+      inSlope: 2
+      outSlope: -2
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: 0
+      inSlope: -2
       outSlope: 0
-      tangentMode: 136
-      weightedMode: 3
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
@@ -4298,21 +4298,21 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 9012.315
-      outSlope: 9012.315
-      tangentMode: 0
-      weightedMode: 3
-      inWeight: 0.00011098385
-      outWeight: 0.33333334
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0

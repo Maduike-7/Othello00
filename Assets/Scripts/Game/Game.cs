@@ -6,16 +6,16 @@ using static Globals;
 
 public class Game : MonoBehaviour
 {
-    [Header("Object references")]
     [SerializeField] Camera mainCam;
     [SerializeField] HUD hud;
     //[SerializeField] AudioController audioController;
-
-    [SerializeField] Transform discHolder;
+    [SerializeField] Transform discParent;
     [SerializeField] GameObject hintDisc;
 
-    [Header("CPU data")]
-    [SerializeField] AnimationCurve[] moveSelectionWeights;
+    [Space]
+
+    [Tooltip("Weighted chances that the CPU will make a certain move.\nLeft = worse move; Right = better move\nTop = higher chance; Bottom = lower chance")]
+    [SerializeField] AnimationCurve[] cpuDifficultyCurves;
 
     bool inputEnabled = true;
 
@@ -68,7 +68,7 @@ public class Game : MonoBehaviour
             for (int col = 0; col < BOARD_SIZE; col++)
             {
                 //set elements in gameBoard
-                gameBoard[row, col] = discHolder.GetChild(row * BOARD_SIZE + col).gameObject;
+                gameBoard[row, col] = discParent.GetChild(row * BOARD_SIZE + col).gameObject;
 
 #if UNITY_EDITOR
                 //rename gameobjects for easier debugging
@@ -317,7 +317,32 @@ public class Game : MonoBehaviour
     //get coordinates of CPU's next move, based on <cpuDifficulty>
     (int row, int col) FindCPUMove()
     {
-        return (-1, -1);
+        List<float> moveSelectionWeights = new List<float>(validSpaces.Count);
+
+        for (int i = 0; i < validSpaces.Count; i++)
+        {
+            moveSelectionWeights.Add(cpuDifficultyCurves[cpuDifficulty].Evaluate((i + 1f) / (validSpaces.Count + 1f)));
+        }
+        
+        //UnityEditor.EditorApplication.isPlaying = false;
+        return validSpaces[GetRandomWeightedIndex(moveSelectionWeights)].coordinate;
+    }
+
+    int GetRandomWeightedIndex(List<float> weights)
+    {
+        float weightSum = weights.Sum();
+
+        for (int i = 0; i < weights.Count; i++)
+        {
+            if (Random.Range(0, weightSum) < weights[i])
+            {
+                return i;
+            }
+
+            weightSum -= weights[i];
+        }
+
+        return weights.Count - 1;
     }
 
     void UpdateHints()
