@@ -183,7 +183,7 @@ public class Game : MonoBehaviour
 
         if (soundEnabled)
         {
-            audioController.PlayRandomSound();
+            audioController.PlayDiscPlaceSound();
         }
 
         //call FlipInDirection() for all items in validDirections[]
@@ -194,7 +194,7 @@ public class Game : MonoBehaviour
 
         //disable input until flip animation finishes
         inputEnabled = false;
-        yield return new WaitForSeconds(FLIP_ANIMATION_DURATION);
+        yield return new WaitForSeconds(FLIP_ANIMATION_DURATION + FLIP_ANIMATION_DELAY * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
         int turnsPassed = 0;
@@ -206,8 +206,16 @@ public class Game : MonoBehaviour
     {
         for (int i = 1; i <= flipLength; i++)
         {
+            //set flip axis such that it looks like discs are flipping outward from position of placed disc
             Vector3 flipAxis = Vector3.Cross(direction, gameBoard[coordinate.row, coordinate.col].layer == blackDiscLayer ? Vector3.forward : Vector3.back);
-            gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis);
+
+            //set flip delay based on flipLength such that it looks like discs are flipping one after another, instead of all at once
+            float flipDelay = i * FLIP_ANIMATION_DELAY;
+
+            gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis, flipDelay);
+
+            //play disc flip sfx
+            StartCoroutine(audioController.PlayDiscFlipSound(flipDelay + FLIP_ANIMATION_DURATION));
 
             //increment/decrement disc counts accordingly
             //(player always plays as black)

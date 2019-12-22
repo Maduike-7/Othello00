@@ -17,6 +17,7 @@ public static class Globals
     public static readonly int whiteDiscLayer = LayerMask.NameToLayer("White Disc");
 
     public const float FLIP_ANIMATION_DURATION = 0.5f;
+    public const float FLIP_ANIMATION_DELAY = 0.1f;
 
     #endregion
     

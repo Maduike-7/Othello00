@@ -29,7 +29,7 @@ public class Disc : MonoBehaviour
         //otherwise just set its rotation
         else
         {
-            transform.localRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 0 : -180, flipAxis);
+            transform.localRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 0 : 180, flipAxis);
         }
     }
 
