@@ -15,9 +15,9 @@ public class MainMenu : Menu
         thisMenu.enabled = false;
     }
 
-    public void OnSelectSettings(Canvas settingsMenu)
+    public void OnSelectOptions(Canvas optionsMenu)
     {
-        settingsMenu.enabled = true;
+        optionsMenu.enabled = true;
         thisMenu.enabled = false;
     }
 

@@ -20,7 +20,7 @@ public static class Globals
 
     #endregion
     
-    #region Settings
+    #region Options
 
     public static bool hintsEnabled = true;
     public static bool soundEnabled = true;
