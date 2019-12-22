@@ -13,7 +13,7 @@ public class Disc : MonoBehaviour
         else { whiteDiscCount++; }
     }
 
-    public void FlipUponAxis(Vector3 flipAxis)
+    public void FlipUponAxis(Vector3 flipAxis, float flipDelay = 0f)
     {
         //change layer (white <-> black)
         gameObject.layer = gameObject.layer == blackDiscLayer ? whiteDiscLayer : blackDiscLayer;
@@ -21,7 +21,10 @@ public class Disc : MonoBehaviour
         //if this disc is visible in scene, start rotate animation
         if (gameObject.activeSelf)
         {
-            StartCoroutine(Rotate(Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 0 : -180, flipAxis)));
+            Quaternion startRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 180 : 0, flipAxis);
+            Quaternion endRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 0 : 180, flipAxis);
+
+            StartCoroutine(Rotate(startRotation, endRotation, flipDelay));
         }
         //otherwise just set its rotation
         else
@@ -30,11 +33,12 @@ public class Disc : MonoBehaviour
         }
     }
 
-    IEnumerator Rotate(Quaternion endRot)
+    IEnumerator Rotate(Quaternion startRot, Quaternion endRot, float flipDelay)
     {
         Vector3 originalPos = transform.localPosition;
-        Quaternion startRot = transform.localRotation;
         float currentLerpTime = 0f;
+
+        yield return new WaitForSeconds(flipDelay);
 
         while (currentLerpTime <= FLIP_ANIMATION_DURATION)
         {

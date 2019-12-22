@@ -206,7 +206,7 @@ public class Game : MonoBehaviour
     {
         for (int i = 1; i <= flipLength; i++)
         {
-            Vector3 flipAxis = Vector3.Cross(direction, transform.eulerAngles.x == 0 ? Vector3.forward : Vector3.back);
+            Vector3 flipAxis = Vector3.Cross(direction, gameBoard[coordinate.row, coordinate.col].layer == blackDiscLayer ? Vector3.forward : Vector3.back);
             gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis);
 
             //increment/decrement disc counts accordingly
