@@ -8,14 +8,14 @@ public class Game : MonoBehaviour
 {
     [SerializeField] Camera mainCam;
     [SerializeField] HUD hud;
-    //[SerializeField] AudioController audioController;
+    [SerializeField] AudioController audioController;
     [SerializeField] Transform discParent;
     [SerializeField] GameObject hintDisc;
 
     [Space]
 
     [Tooltip("Weighted chances that the CPU will make a certain move.\nLeft = worse move; Right = better move\nTop = higher chance; Bottom = lower chance")]
-    [SerializeField] AnimationCurve[] cpuDifficultyCurves;
+    [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[MAX_CPU_DIFFICULTY + 1];
 
     bool inputEnabled = true;
 
@@ -185,6 +185,11 @@ public class Game : MonoBehaviour
     {
         gameBoard[coordinate.row, coordinate.col].SetActive(true);
 
+        if (soundEnabled)
+        {
+            audioController.PlayRandomSound();
+        }
+
         //call FlipInDirection() for all items in validDirections[]
         for (int i = 0; i < validDirections.Count; i++)
         {
@@ -324,7 +329,6 @@ public class Game : MonoBehaviour
             moveSelectionWeights.Add(cpuDifficultyCurves[cpuDifficulty].Evaluate((i + 1f) / (validSpaces.Count + 1f)));
         }
         
-        //UnityEditor.EditorApplication.isPlaying = false;
         return validSpaces[GetRandomWeightedIndex(moveSelectionWeights)].coordinate;
     }
 
