@@ -6473,7 +6473,7 @@ PrefabInstance:
     - target: {fileID: 2920385555040980025, guid: 13a38fb439f8f6b48977c77a90244089,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PauseGame
+      value: ShowOptionsMenu
       objectReference: {fileID: 0}
     - target: {fileID: 2920385555040980025, guid: 13a38fb439f8f6b48977c77a90244089,
         type: 3}
@@ -7167,7 +7167,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1013128634}
         m_MethodName: OnSelectResume
         m_Mode: 1
         m_Arguments:

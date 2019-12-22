@@ -47,27 +47,31 @@ public class OptionsMenu : Menu
         ChangeCPUDifficulty(cpuDifficultyDropdown.value);
     }
 
-    public void PauseGame()
+    #region Game scene functions
+
+    public void ShowOptionsMenu()
     {
         thisMenu.enabled = true;
-        gamePaused = true;
+        inputEnabled = false;
     }
 
     public void OnSelectResume()
     {
-        StartCoroutine(ResumeGame());
+        StartCoroutine(HideOptionsMenu());
     }
 
     //this is a coroutine because otherwise, clicking the resume button would register a click on the game board on the same frame
-    IEnumerator ResumeGame()
+    IEnumerator HideOptionsMenu()
     {
         thisMenu.enabled = false;
         yield return new WaitForEndOfFrame();
-        gamePaused = false;
+        inputEnabled = true;
     }
 
     public void OnSelectBackToMainMenu()
     {
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
     }
+
+    #endregion
 }

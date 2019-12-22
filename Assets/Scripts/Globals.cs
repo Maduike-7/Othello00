@@ -7,7 +7,7 @@ public static class Globals
     #region Game
 
     public static bool gameOver;
-    public static bool gamePaused;
+    public static bool inputEnabled;
 
     public static bool playerTurn = true;
     public static int blackDiscCount = 2;

@@ -17,8 +17,6 @@ public class Game : MonoBehaviour
     [Tooltip("Weighted chances that the CPU will make a certain move.\nLeft = worse move; Right = better move\nTop = higher chance; Bottom = lower chance")]
     [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[MAX_CPU_DIFFICULTY + 1];
 
-    bool inputEnabled = true;
-
     const int BOARD_SIZE = 8;
     GameObject[,] gameBoard = new GameObject[BOARD_SIZE, BOARD_SIZE];
 
@@ -49,9 +47,9 @@ public class Game : MonoBehaviour
 
     void ResetGameState()
     {
+        inputEnabled = true;
         gameOver = false;
         playerTurn = true;
-        inputEnabled = true;
         whiteDiscCount = 2;
         blackDiscCount = 2;
 
@@ -93,12 +91,10 @@ public class Game : MonoBehaviour
 
     void Update()
     {
-        if (!gameOver && !gamePaused && playerTurn)
+        if (!gameOver && inputEnabled && playerTurn)
         {
-            if (inputEnabled)
-            {
-                GetMouseInput();
-            }
+            GetMouseInput();
+
             if (hintsEnabled)
             {
                 UpdateHints();
@@ -328,7 +324,7 @@ public class Game : MonoBehaviour
         {
             moveSelectionWeights.Add(cpuDifficultyCurves[cpuDifficulty].Evaluate((i + 1f) / (validSpaces.Count + 1f)));
         }
-        
+
         return validSpaces[GetRandomWeightedIndex(moveSelectionWeights)].coordinate;
     }
 
