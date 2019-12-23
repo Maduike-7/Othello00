@@ -41,8 +41,12 @@ public class Game : MonoBehaviour
 
     void Awake()
     {
-        ResetGameState();
         InitGameBoard();
+    }
+
+    void Start()
+    {
+        ResetGameState();
     }
 
     void ResetGameState()
