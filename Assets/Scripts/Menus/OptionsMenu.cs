@@ -51,7 +51,7 @@ public class OptionsMenu : Menu
 
     public void ShowOptionsMenu()
     {
-        thisMenu.enabled = true;
+        OpenMenu(thisMenu);
         inputEnabled = false;
     }
 
@@ -63,15 +63,9 @@ public class OptionsMenu : Menu
     //this is a coroutine because otherwise, clicking the resume button would register a click on the game board on the same frame
     IEnumerator HideOptionsMenu()
     {
-        thisMenu.enabled = false;
+        CloseMenu(thisMenu);
         yield return new WaitForEndOfFrame();
         inputEnabled = true;
     }
-
-    public void OnSelectBackToMainMenu()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
-    }
-
     #endregion
 }

@@ -38,9 +38,24 @@ public class Menu : MonoBehaviour
         titleText.colorGradient = grad;
     }
 
-    public void OnSelectBack(Canvas mainMenu)
+    protected void OpenMenu(Canvas menu)
     {
-        mainMenu.enabled = true;
-        thisMenu.enabled = false;
+        menu.enabled = true;
+    }
+
+    protected void CloseMenu(Canvas menu)
+    {
+        menu.enabled = false;
+    }
+
+    public void SwitchMenu(Canvas menu)
+    {
+        OpenMenu(menu);
+        CloseMenu(thisMenu);
+    }
+
+    public void LoadScene(int sceneIndex)
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex);
     }
 }

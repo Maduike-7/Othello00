@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using static Globals;
 
-public class Game : MonoBehaviour
+public class GameController : MonoBehaviour
 {
     [SerializeField] Camera mainCam;
     [SerializeField] HUD hud;
@@ -44,25 +44,6 @@ public class Game : MonoBehaviour
         InitGameBoard();
     }
 
-    void Start()
-    {
-        ResetGameState();
-    }
-
-    void ResetGameState()
-    {
-        inputEnabled = true;
-        gameOver = false;
-        playerTurn = true;
-        whiteDiscCount = 2;
-        blackDiscCount = 2;
-
-        validSpaces.Add(((2, 4), 1));
-        validSpaces.Add(((3, 5), 1));
-        validSpaces.Add(((4, 2), 1));
-        validSpaces.Add(((5, 3), 1));
-    }
-
     void InitGameBoard()
     {
         for (int row = 0; row < BOARD_SIZE; row++)
@@ -91,6 +72,25 @@ public class Game : MonoBehaviour
 
             }
         }
+    }
+
+    void Start()
+    {
+        ResetGameState();
+    }
+
+    void ResetGameState()
+    {
+        inputEnabled = true;
+        gameOver = false;
+        playerTurn = true;
+        whiteDiscCount = 2;
+        blackDiscCount = 2;
+
+        validSpaces.Add(((2, 4), 1));
+        validSpaces.Add(((3, 5), 1));
+        validSpaces.Add(((4, 2), 1));
+        validSpaces.Add(((5, 3), 1));
     }
 
     void Update()
@@ -391,56 +391,4 @@ public class Game : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
     }
-
-    #region DEBUG
-#if UNITY_EDITOR
-
-    void DebugKeys()
-    {
-        if (Input.GetKeyDown(KeyCode.Q)) UnityEngine.SceneManagement.SceneManager.LoadScene(0);
-        if (Input.GetKeyDown(KeyCode.R)) UnityEngine.SceneManagement.SceneManager.LoadScene(1);
-    }
-
-    void DebugBoard()
-    {
-        for (int row = BOARD_SIZE - 1; row >= 0; row--)
-        {
-            string output = "";
-
-            for (int col = 0; col < BOARD_SIZE; col++)
-            {
-                output += gameBoard[row, col].activeInHierarchy ? (gameBoard[row, col].layer == whiteDiscLayer ? "W, " : "B, ") : "o, ";
-            }
-
-            print(output);
-        }
-    }
-
-    void DebugValidDirections((int, int) coordinate)
-    {
-        print("valid directions for " + coordinate + ": ");
-
-        for (int i = 0; i < validDirections.Count; i++)
-        {
-            print(checkDirections[i] + " -> " + validDirections[i]);
-        }
-    }
-
-    void DebugValidSpaces()
-    {
-        print("valid spaces for " + (playerTurn ? "black:" : "white:"));
-
-        foreach (var item in validSpaces)
-        {
-            print(item);
-        }
-    }
-
-    void PauseEditor()
-    {
-        UnityEditor.EditorApplication.isPaused = true;
-    }
-
-#endif
-    #endregion
 }
