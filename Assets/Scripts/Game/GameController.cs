@@ -121,14 +121,14 @@ public class GameController : MonoBehaviour
                 //if disc at selected coordinate is inactive, and if selectedCoordinate exists in validSpaces[], make move
                 if (!gameBoard[selectedCoordinate.row, selectedCoordinate.col].activeInHierarchy && validSpaces.Any(item => item.coordinate == selectedCoordinate))
                 {
-                    FindValidDirections(playerTurn, selectedCoordinate);
+                    FindValidDirections(selectedCoordinate);
                     StartCoroutine(MakeMove(selectedCoordinate));
                 }
             }
         }
     }
 
-    void FindValidDirections(bool playerTurn, (int row, int col) coordinate)
+    void FindValidDirections((int row, int col) coordinate)
     {
         validDirections.Clear();
 
@@ -138,7 +138,7 @@ public class GameController : MonoBehaviour
             if (coordinate.row + checkDirections[i].y >= 0 && coordinate.row + checkDirections[i].y < BOARD_SIZE &&
                 coordinate.col + checkDirections[i].x >= 0 && coordinate.col + checkDirections[i].x < BOARD_SIZE)
             {
-                var (isValid, flipCount) = CheckInDirection(playerTurn, coordinate, checkDirections[i]);
+                var (isValid, flipCount) = CheckInDirection(coordinate, checkDirections[i]);
                 if (isValid)
                 {
                     validDirections.Add((checkDirections[i], flipCount));
@@ -147,8 +147,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    //raycast from <coordinate's world space> in <direction> to check for discs depending on <playerTurn>
-    (bool isValid, int flipCount) CheckInDirection(bool playerTurn, (int row, int col) coordinate, Vector3 direction)
+    //raycast from <coordinate's world space> in <direction> to check for discs depending on whose turn it is
+    (bool isValid, int flipCount) CheckInDirection((int row, int col) coordinate, Vector3 direction)
     {
         Vector3 rayOrigin = gameBoard[coordinate.row, coordinate.col].transform.position;
         float rayDistance = direction.normalized.magnitude;
@@ -296,9 +296,9 @@ public class GameController : MonoBehaviour
             {
                 if (!gameBoard[row, col].activeInHierarchy)
                 {
-                    FindValidDirections(playerTurn, (row, col));
+                    FindValidDirections((row, col));
 
-                    //if coordinate makes valid move, add to validSpaces[0], with total number of discs flipped
+                    //if placing a disc at [row, col] makes for valid move, add to validSpaces[], with total number of discs flipped
                     if (validDirections.Count > 0)
                     {
                         int totalFlipCount = validDirections.Sum(i => i.flipCount);
@@ -318,12 +318,11 @@ public class GameController : MonoBehaviour
 
         (int row, int col) selectedCoordinate = FindCPUMove();
 
-        //wait for a longer time the more discs are on the game board (to add a bit of R E A L I S M)
-        //wait for ~1s at start of game, up to ~2s by end of game
-        float cpuDelay = 1 + (whiteDiscCount + blackDiscCount - 4) / 60f;
+        //more possible valid spaces = longer wait time (to make it seem a bit more R E A L I S T I C)
+        float cpuDelay = validSpaces.Count / 8f + 1;
         yield return new WaitForSeconds(cpuDelay);
 
-        FindValidDirections(playerTurn, selectedCoordinate);
+        FindValidDirections(selectedCoordinate);
         StartCoroutine(MakeMove(selectedCoordinate));
     }
 
@@ -363,14 +362,17 @@ public class GameController : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(MeshCollider))
         {
+            //get board coordinate at where player moused over
             (int row, int col) coordinate = WorldToBoardCoordinates(hit);
 
+            //if placing a disc at coordinate would result in a valid move
             if (validSpaces.Any(i => i.coordinate == coordinate))
             {
-                //set hintDisc gameObject to active and position it at coordinate's transform.position
+                //show hintDisc, and position it at coordinate's transform.position
                 hintDisc.transform.localPosition = gameBoard[coordinate.row, coordinate.col].transform.position;
                 hintDisc.SetActive(true);
             }
+            //otherwise hide hintDisc
             else
             {
                 hintDisc.SetActive(false);
@@ -385,10 +387,5 @@ public class GameController : MonoBehaviour
         int row = Mathf.FloorToInt(hit.point.y / hit.collider.bounds.extents.y * (BOARD_SIZE / 2) + (BOARD_SIZE / 2));
         int col = Mathf.FloorToInt(hit.point.x / hit.collider.bounds.extents.x * (BOARD_SIZE / 2) + (BOARD_SIZE / 2));
         return (row, col);
-    }
-
-    public void BackToMainMenu()
-    {
-        UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(0);
     }
 }
