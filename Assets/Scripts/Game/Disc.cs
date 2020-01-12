@@ -5,10 +5,9 @@ using static Globals;
 
 public class Disc : MonoBehaviour
 {
-    AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-
     void OnEnable()
     {
+        //increment disc count based on whose turn it is
         if (playerTurn) { blackDiscCount++; }
         else { whiteDiscCount++; }
     }
@@ -35,6 +34,7 @@ public class Disc : MonoBehaviour
 
     IEnumerator Rotate(Quaternion startRot, Quaternion endRot, float flipDelay)
     {
+        AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         Vector3 originalPos = transform.localPosition;
         float currentLerpTime = 0f;
 

@@ -32,7 +32,10 @@ public class GameController : MonoBehaviour
         new Vector3Int(-1, 1, 0)
     };
 
+    //list to hold (direction in which >0 discs would be flipped, number of discs to flip)
     List<(Vector3Int direction, int flipCount)> validDirections = new List<(Vector3Int, int)>(8);
+
+    //list to hold (row-column coordinate of board if a disc placed there would result in a valid move, total number of discs that would flip if a disc was placed there)
     List<((int row, int col) coordinate, int totalFlipCount)> validSpaces = new List<((int, int), int)>();
 
     //used for CPU to prioritize placing discs on these coordinates on harder difficulty settings
@@ -53,10 +56,6 @@ public class GameController : MonoBehaviour
                 //set elements in gameBoard
                 gameBoard[row, col] = discParent.GetChild(row * BOARD_SIZE + col).gameObject;
 
-#if UNITY_EDITOR
-                //rename gameobjects for easier debugging
-                gameBoard[row, col].name = string.Format("Disc [{0}][{1}]", row, col);
-#endif
                 //init. edge and corner coordinates
                 if (row == 0 || col == 0 || row == BOARD_SIZE - 1 || col == BOARD_SIZE - 1)
                 {
@@ -69,7 +68,6 @@ public class GameController : MonoBehaviour
                         edges.Add((row, col));
                     }
                 }
-
             }
         }
     }
@@ -198,6 +196,8 @@ public class GameController : MonoBehaviour
 
         //disable input until flip animation finishes
         inputEnabled = false;
+
+        //wait for seconds based on highest flipCount in validDirections
         yield return new WaitForSeconds(FLIP_ANIMATION_DURATION + FLIP_ANIMATION_DELAY * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
@@ -252,7 +252,7 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            //pass turn over; look for validSpaces given <playerTurn> in new board state
+            //pass the turn over; look for validSpaces given <playerTurn> in new board state
             playerTurn = !playerTurn;
             FindValidSpaces(playerTurn);
 
@@ -267,7 +267,7 @@ public class GameController : MonoBehaviour
                     StartCoroutine(RunCPU());
                 }
             }
-            //if a valid move doesn't exist, increment number of turns passed and call this function again
+            //if a valid move doesn't exist, increment turnsPassed counter; call this function again
             else
             {
                 turnsPassed++;
@@ -341,18 +341,23 @@ public class GameController : MonoBehaviour
 
     int GetRandomWeightedIndex(List<float> weights)
     {
+        //get sum of weights
         float weightSum = weights.Sum();
 
+        //loop through all weights; see if each one is selected
         for (int i = 0; i < weights.Count; i++)
         {
+            //randomize between 0 and sum of weights; if random number is less than current weight being checked, return index of that number
             if (Random.Range(0, weightSum) < weights[i])
             {
                 return i;
             }
 
+            //otherwise remove current weight from sum of weights; repeat
             weightSum -= weights[i];
         }
 
+        //return last index if all previous items weren't selected
         return weights.Count - 1;
     }
 
