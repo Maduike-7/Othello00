@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public static class Globals
 {
@@ -14,8 +16,8 @@ public static class Globals
     public static readonly int blackDiscLayer = LayerMask.NameToLayer("Black Disc");
     public static readonly int whiteDiscLayer = LayerMask.NameToLayer("White Disc");
 
-    public const float FlipAnimationDuration = 0.5f;
-    public const float FlipAnimationDelay = 0.1f;
+    public const float FLIP_ANIMATION_DURATION = 0.5f;
+    public const float FLIP_ANIMATION_DELAY = 0.1f;
 
     #endregion
     
@@ -38,7 +40,7 @@ public static class Globals
 
     public static void ChangeCPUDifficulty(int newValue)
     {
-        cpuDifficulty = Mathf.Clamp(newValue, 0, MaxCPUDifficulty);
+        cpuDifficulty = Mathf.Clamp(newValue, 0, MAX_CPU_DIFFICULTY);
         PlayerPrefs.SetInt("CPU difficulty", cpuDifficulty);
     }
 
@@ -47,7 +49,7 @@ public static class Globals
     #region CPU
 
     public static int cpuDifficulty;
-    public const int MaxCPUDifficulty = 2; 
+    public const int MAX_CPU_DIFFICULTY = 2; 
 
     #endregion
 }

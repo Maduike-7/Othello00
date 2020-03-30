@@ -6,7 +6,8 @@ using static Globals;
 
 public class GameController : MonoBehaviour
 {
-    Camera mainCam;
+    [SerializeField] Camera mainCam;
+    [SerializeField] HUD hud;
     [SerializeField] AudioController audioController;
     [SerializeField] Transform discParent;
     [SerializeField] GameObject hintDisc;
@@ -14,12 +15,12 @@ public class GameController : MonoBehaviour
     [Space]
 
     [Tooltip("Weighted chances that the CPU will make a certain move.\nLeft = worse move; Right = better move\nTop = higher chance; Bottom = lower chance")]
-    [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[MaxCPUDifficulty + 1];
+    [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[MAX_CPU_DIFFICULTY + 1];
 
-    const int BoardSize = 8;
-    GameObject[,] gameBoard = new GameObject[BoardSize, BoardSize];
+    const int BOARD_SIZE = 8;
+    GameObject[,] gameBoard = new GameObject[BOARD_SIZE, BOARD_SIZE];
 
-    Vector3Int[] checkDirections = new Vector3Int[8]
+    Vector3Int[] checkDirections = new Vector3Int[]
     {
         new Vector3Int( 0, 1, 0),
         new Vector3Int( 1, 1, 0),
@@ -39,31 +40,26 @@ public class GameController : MonoBehaviour
 
     //used for CPU to prioritize placing discs on these coordinates on harder difficulty settings
     List<(int row, int col)> corners = new List<(int, int)>(4);
-    List<(int row, int col)> edges = new List<(int, int)>((BoardSize - 1) * 4);
-
-    public event System.Action DiscPlaceAction;
-    public event System.Action DiscFlipAction;
-    public event System.Action ScoreUpdateAction;
+    List<(int row, int col)> edges = new List<(int, int)>((BOARD_SIZE - 1) * 4);
 
     void Awake()
     {
-        mainCam = Camera.main;
         InitGameBoard();
     }
 
     void InitGameBoard()
     {
-        for (int row = 0; row < BoardSize; row++)
+        for (int row = 0; row < BOARD_SIZE; row++)
         {
-            for (int col = 0; col < BoardSize; col++)
+            for (int col = 0; col < BOARD_SIZE; col++)
             {
                 //set elements in gameBoard
-                gameBoard[row, col] = discParent.GetChild(row * BoardSize + col).gameObject;
+                gameBoard[row, col] = discParent.GetChild(row * BOARD_SIZE + col).gameObject;
 
-                //set edge and corner coordinates
-                if (row == 0 || col == 0 || row == BoardSize - 1 || col == BoardSize - 1)
+                //init. edge and corner coordinates
+                if (row == 0 || col == 0 || row == BOARD_SIZE - 1 || col == BOARD_SIZE - 1)
                 {
-                    if ((row == 0 || row == BoardSize - 1) && (col == 0 || col == BoardSize - 1))
+                    if ((row == 0 || row == BOARD_SIZE - 1) && (col == 0 || col == BOARD_SIZE - 1))
                     {
                         corners.Add((row, col));
                     }
@@ -110,7 +106,7 @@ public class GameController : MonoBehaviour
 
     void GetMouseInput()
     {
-        //0 = L. mouse button released
+        //on L. mouse button released, fire raycast at mouse position
         if (Input.GetMouseButtonUp(0))
         {
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
@@ -118,7 +114,7 @@ public class GameController : MonoBehaviour
             //if raycast hit game board...
             if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(MeshCollider))
             {
-                (int row, int col) selectedCoordinate = InverseTransformPoint(hit);
+                (int row, int col) selectedCoordinate = WorldToBoardCoordinates(hit);
 
                 //if disc at selected coordinate is inactive, and if selectedCoordinate exists in validSpaces[], make move
                 if (!gameBoard[selectedCoordinate.row, selectedCoordinate.col].activeInHierarchy && validSpaces.Any(item => item.coordinate == selectedCoordinate))
@@ -137,8 +133,8 @@ public class GameController : MonoBehaviour
         //call CheckInDirection for all 8 directions in checkDirections[], and store result as (valid check direction, amount to flip) in validDirections[]
         for (int i = 0; i < checkDirections.Length; i++)
         {
-            if (coordinate.row + checkDirections[i].y >= 0 && coordinate.row + checkDirections[i].y < BoardSize &&
-                coordinate.col + checkDirections[i].x >= 0 && coordinate.col + checkDirections[i].x < BoardSize)
+            if (coordinate.row + checkDirections[i].y >= 0 && coordinate.row + checkDirections[i].y < BOARD_SIZE &&
+                coordinate.col + checkDirections[i].x >= 0 && coordinate.col + checkDirections[i].x < BOARD_SIZE)
             {
                 var (isValid, flipCount) = CheckInDirection(coordinate, checkDirections[i]);
                 if (isValid)
@@ -202,7 +198,7 @@ public class GameController : MonoBehaviour
         inputEnabled = false;
 
         //wait for seconds based on highest flipCount in validDirections
-        yield return new WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
+        yield return new WaitForSeconds(FLIP_ANIMATION_DURATION + FLIP_ANIMATION_DELAY * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
         int turnsPassed = 0;
@@ -218,12 +214,12 @@ public class GameController : MonoBehaviour
             Vector3 flipAxis = Vector3.Cross(direction, gameBoard[coordinate.row, coordinate.col].layer == blackDiscLayer ? Vector3.forward : Vector3.back);
 
             //set flip delay based on flipLength such that it looks like discs are flipping one after another, instead of all at once
-            float flipDelay = i * FlipAnimationDelay;
+            float flipDelay = i * FLIP_ANIMATION_DELAY;
 
             gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis, flipDelay);
 
             //play disc flip sfx
-            StartCoroutine(audioController.PlayDiscFlipSound(flipDelay + FlipAnimationDuration));
+            StartCoroutine(audioController.PlayDiscFlipSound(flipDelay + FLIP_ANIMATION_DURATION));
 
             //increment/decrement disc counts accordingly
             //(player always plays as black)
@@ -279,13 +275,13 @@ public class GameController : MonoBehaviour
             }
         }
         //game is over when turn has been passed twice without a move being made
-        //(checking if board is full is not good enough because gameover states exist where the board isn't completely filled and neither player can make a move)
+        //(checking if board is full is not good enough, because there exists board states in which it isn't filled and neither player can make a move)
         else
         {
             gameOver = true;
         }
 
-        ScoreUpdateAction?.Invoke();
+        hud.UpdateHUD();
     }
 
     //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
@@ -294,9 +290,9 @@ public class GameController : MonoBehaviour
     {
         validSpaces.Clear();
 
-        for (int row = 0; row < BoardSize; row++)
+        for (int row = 0; row < BOARD_SIZE; row++)
         {
-            for (int col = 0; col < BoardSize; col++)
+            for (int col = 0; col < BOARD_SIZE; col++)
             {
                 if (!gameBoard[row, col].activeInHierarchy)
                 {
@@ -372,7 +368,7 @@ public class GameController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(MeshCollider))
         {
             //get board coordinate at where player moused over
-            (int row, int col) coordinate = InverseTransformPoint(hit);
+            (int row, int col) coordinate = WorldToBoardCoordinates(hit);
 
             //if placing a disc at coordinate would result in a valid move
             if (validSpaces.Any(i => i.coordinate == coordinate))
@@ -389,12 +385,12 @@ public class GameController : MonoBehaviour
         }
     }
 
-    //get row-column coordinates from [0, BoardSize - 1] based on (hit.point.xy / hit.collider.bounds.extents.xy)
-    //bottom-left: (0, 0); top-right: (BoardSize - 1, BoardSize - 1)
-    (int row, int col) InverseTransformPoint(RaycastHit hit)
+    //get row-column coordinates from [0, BOARD_SIZE - 1] based on (hit.point.xy / hit.collider.bounds.extents.xy)
+    //bottom-left: (0, 0); top-right: (BOARD_SIZE - 1, BOARD_SIZE - 1)
+    (int row, int col) WorldToBoardCoordinates(RaycastHit hit)
     {
-        int row = Mathf.FloorToInt(hit.point.y / hit.collider.bounds.extents.y * (BoardSize / 2) + (BoardSize / 2));
-        int col = Mathf.FloorToInt(hit.point.x / hit.collider.bounds.extents.x * (BoardSize / 2) + (BoardSize / 2));
+        int row = Mathf.FloorToInt(hit.point.y / hit.collider.bounds.extents.y * (BOARD_SIZE / 2) + (BOARD_SIZE / 2));
+        int col = Mathf.FloorToInt(hit.point.x / hit.collider.bounds.extents.x * (BOARD_SIZE / 2) + (BOARD_SIZE / 2));
         return (row, col);
     }
 }

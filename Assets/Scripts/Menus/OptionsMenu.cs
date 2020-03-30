@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -59,7 +60,7 @@ public class OptionsMenu : Menu
         StartCoroutine(HideOptionsMenu());
     }
 
-    //this is a coroutine because otherwise, clicking the resume button would register a click on the game board at the same time
+    //this is a coroutine because otherwise, clicking the resume button would register a click on the game board on the same frame
     IEnumerator HideOptionsMenu()
     {
         CloseMenu(thisMenu);
