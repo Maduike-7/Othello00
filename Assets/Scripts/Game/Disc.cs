@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static Globals;
 
@@ -14,7 +13,7 @@ public class Disc : MonoBehaviour
 
     public void FlipUponAxis(Vector3 flipAxis, float flipDelay = 0f)
     {
-        //change layer (white <-> black)
+        //toggle layer (white <-> black)
         gameObject.layer = gameObject.layer == blackDiscLayer ? whiteDiscLayer : blackDiscLayer;
 
         //if this disc is visible in scene, start rotate animation
@@ -32,6 +31,7 @@ public class Disc : MonoBehaviour
         }
     }
 
+    //lerp rotation from <startRot> to <endRot>
     IEnumerator Rotate(Quaternion startRot, Quaternion endRot, float flipDelay)
     {
         AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
@@ -40,17 +40,19 @@ public class Disc : MonoBehaviour
 
         yield return new WaitForSeconds(flipDelay);
 
-        while (currentLerpTime <= FLIP_ANIMATION_DURATION)
+        while (currentLerpTime <= FlipAnimationDuration)
         {
-            float t = currentLerpTime / FLIP_ANIMATION_DURATION;
+            yield return new WaitForEndOfFrame();
+            currentLerpTime += Time.deltaTime;
+            float t = currentLerpTime / FlipAnimationDuration;
+
+            //set rotation
             transform.localRotation = Quaternion.Lerp(startRot, endRot, flipAnimationCurve.Evaluate(t));
 
+            //set position
             Vector3 newPos = transform.position;
             newPos.z = -Mathf.Sin(Mathf.PI * t) / 2;
             transform.position = newPos;
-
-            currentLerpTime += Time.deltaTime;
-            yield return null;
         }
 
         transform.localPosition = originalPos;

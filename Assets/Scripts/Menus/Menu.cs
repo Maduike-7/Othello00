@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
 
 public class Menu : MonoBehaviour
@@ -24,7 +22,6 @@ public class Menu : MonoBehaviour
     //animate title opacity from [0.2, 1.0] over a cosine wave
     void AnimateTitleText()
     {
-        //Color c = titleText.color;
         VertexGradient grad = titleText.colorGradient;
 
         float topAlpha = 0.8f * Mathf.Cos(Time.timeSinceLevelLoad) / 2 + 0.6f;
