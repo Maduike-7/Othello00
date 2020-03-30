@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using static Globals;
@@ -10,7 +8,12 @@ public class HUD : MonoBehaviour
     [SerializeField] TextMeshProUGUI gameStateDisplay, blackCountDisplay, whiteCountDisplay;
     [SerializeField] Button optionsButton, mainMenuButton;
 
-    public void UpdateHUD()
+    void Awake()
+    {
+        FindObjectOfType<GameController>().ScoreUpdateAction += UpdateHUD;
+    }
+
+    void UpdateHUD()
     {
         //update disc count display
         blackCountDisplay.text = blackDiscCount.ToString();
