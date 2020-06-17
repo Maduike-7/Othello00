@@ -25,4 +25,4 @@ The AI logic is the same for all difficulties:
 2. order the list by whether or not the cell is a corner space, then by whether or not it's an edge space, then all the other normal spaces follow afterwards
 3. pick a cell to place the disc on, based on a weighted random selection
 
-But the weights are different across all difficulties (weighted towards a worse move on Easy, and towards a better move on Hard).
+The only difference is the weights across all difficulties (weighted towards a worse move on Easy, and towards a better move on Hard).
