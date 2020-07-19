@@ -2,7 +2,7 @@
 
 This is part of my game clone series, where I take a video game and recreate it in Unity, challenging myself to write all the code and create all the graphical assets (except fonts) from scratch.
 
-This is a clone of the popular board game Othello.
+This is a clone of the popular board game Othello (a.k.a [Reversi](https://en.wikipedia.org/wiki/Reversi)).
 
 ---
 
@@ -13,7 +13,7 @@ This is a clone of the popular board game Othello.
 
 ### Secondary objective(s)
 * learn Blender basics
-* learn about Actions
+* learn about C# Actions
 
 ---
 
