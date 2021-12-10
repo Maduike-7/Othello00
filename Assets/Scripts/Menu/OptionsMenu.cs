@@ -50,7 +50,7 @@ public class OptionsMenu : Menu
 
     public void ShowOptionsMenu()
     {
-        OpenMenu(thisMenu);
+        Open();
         inputEnabled = false;
     }
 
@@ -62,8 +62,8 @@ public class OptionsMenu : Menu
     //this is a coroutine because otherwise, clicking the resume button would register a click on the game board on the same frame
     IEnumerator HideOptionsMenu()
     {
-        CloseMenu(thisMenu);
-        yield return new WaitForEndOfFrame();
+        Close();
+        yield return null;
         inputEnabled = true;
     }
     #endregion

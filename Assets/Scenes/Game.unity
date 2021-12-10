@@ -3854,7 +3854,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9745c21e225ac64e8c48a9729c850b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleText: {fileID: 1991648682}
   hintsToggle: {fileID: 416045334}
   soundToggle: {fileID: 1940718948}
   cpuDifficultyDropdown: {fileID: 0}
@@ -7836,16 +7835,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4278190080
-      objectReference: {fileID: 0}
-    - target: {fileID: 4456343503280826136, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 4456343503280826136, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb6d73d8bed5b394e8eb0c776eed2f3c, type: 3}
