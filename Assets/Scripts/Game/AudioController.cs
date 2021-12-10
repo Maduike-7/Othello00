@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CoroutineHelper;
 
 public class AudioController : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class AudioController : MonoBehaviour
     //other option would be to have separate AudioSources to handle disc-place and disc-flip sfx independently
     IEnumerator PlayDiscPlaceSound(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return WaitForSeconds(delay);
         aux.clip = discFlipSound;
         aux.Play();
     }

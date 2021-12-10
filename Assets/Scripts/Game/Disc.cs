@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 using static Globals;
+using static CoroutineHelper;
 
 public class Disc : MonoBehaviour
 {
+    readonly AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);    
+
     void OnEnable()
     {
         //increment disc count based on whose turn it is
@@ -34,15 +37,14 @@ public class Disc : MonoBehaviour
     //lerp rotation from <startRot> to <endRot>
     IEnumerator Rotate(Quaternion startRot, Quaternion endRot, float flipDelay)
     {
-        AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         Vector3 originalPos = transform.localPosition;
         float currentLerpTime = 0f;
 
-        yield return new WaitForSeconds(flipDelay);
+        yield return WaitForSeconds(flipDelay);
 
         while (currentLerpTime <= FlipAnimationDuration)
         {
-            yield return new WaitForEndOfFrame();
+            yield return EndOfFrame;
             currentLerpTime += Time.deltaTime;
             float t = currentLerpTime / FlipAnimationDuration;
 

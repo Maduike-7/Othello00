@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static Globals;
+using static CoroutineHelper;
 
 public class GameController : MonoBehaviour
 {
@@ -202,7 +203,7 @@ public class GameController : MonoBehaviour
         inputEnabled = false;
 
         //wait for seconds based on highest flipCount in validDirections
-        yield return new WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
+        yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
         int turnsPassed = 0;
@@ -324,7 +325,7 @@ public class GameController : MonoBehaviour
 
         //more possible valid spaces = longer wait time (to make it seem a bit more R E A L I S T I C)
         float cpuDelay = validSpaces.Count / 8f + 1;
-        yield return new WaitForSeconds(cpuDelay);
+        yield return WaitForSeconds(cpuDelay);
 
         FindValidDirections(selectedCoordinate);
         StartCoroutine(MakeMove(selectedCoordinate));
