@@ -45,10 +45,13 @@ public class GameController : MonoBehaviour
     public event System.Action DiscPlaceAction;
     public event System.Action<float> DiscFlipAction;
     public event System.Action ScoreUpdateAction;
+    public event System.Action GameOverAction;
 
     void Awake()
     {
         mainCam = Camera.main;
+        GameOverAction += OnGameOver;
+
         InitGameBoard();
     }
 
@@ -85,7 +88,6 @@ public class GameController : MonoBehaviour
     void ResetGameState()
     {
         inputEnabled = true;
-        gameOver = false;
         playerTurn = true;
         whiteDiscCount = 2;
         blackDiscCount = 2;
@@ -98,7 +100,7 @@ public class GameController : MonoBehaviour
 
     void Update()
     {
-        if (!gameOver && inputEnabled && playerTurn)
+        if (inputEnabled && playerTurn)
         {
             GetMouseInput();
 
@@ -283,7 +285,7 @@ public class GameController : MonoBehaviour
         //(checking if board is full is not good enough because gameover states exist where the board isn't completely filled and neither player can make a move)
         else
         {
-            gameOver = true;
+            GameOverAction?.Invoke();
         }
 
         ScoreUpdateAction?.Invoke();
@@ -388,6 +390,11 @@ public class GameController : MonoBehaviour
                 hintDisc.SetActive(false);
             }
         }
+    }
+
+    void OnGameOver()
+    {
+        enabled = false;
     }
 
     //get row-column coordinates from [0, BoardSize - 1] based on (hit.point.xy / hit.collider.bounds.extents.xy)

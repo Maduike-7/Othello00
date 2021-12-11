@@ -4,7 +4,6 @@ public static class Globals
 {
     #region Game
 
-    public static bool gameOver;
     public static bool inputEnabled;
 
     public static bool playerTurn = true;

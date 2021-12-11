@@ -11,6 +11,7 @@ public class HUD : MonoBehaviour
     void Awake()
     {
         FindObjectOfType<GameController>().ScoreUpdateAction += UpdateHUD;
+        FindObjectOfType<GameController>().GameOverAction += OnGameOver;
     }
 
     void UpdateHUD()
@@ -19,17 +20,18 @@ public class HUD : MonoBehaviour
         blackCountDisplay.text = blackDiscCount.ToString();
         whiteCountDisplay.text = whiteDiscCount.ToString();
 
-        //update game state display depending on:
-        //if the game isn't over, whose turn it is
-        //if the game is over, who has more discs
-        //(lol)
-        gameStateDisplay.text = !gameOver ? ((playerTurn ? "Your " : "CPU's ") + "turn.") : "Game over.\n" + (blackDiscCount > whiteDiscCount ? "You win!" : (blackDiscCount < whiteDiscCount ? "CPU wins." : "Tie game"));
-        gameStateDisplay.color = !gameOver ? (playerTurn ? Color.black : Color.white) : blackDiscCount > whiteDiscCount ? Color.black : (blackDiscCount < whiteDiscCount ? Color.white : Color.gray);
+        //update game state displays based on whose turn it is
+        gameStateDisplay.text = (playerTurn ? "Your " : "CPU's ") + "turn.";
+        gameStateDisplay.color = playerTurn ? Color.black : Color.white;
+    }
 
-        if (gameOver)
-        {
-            optionsButton.gameObject.SetActive(false);
-            mainMenuButton.gameObject.SetActive(true);
-        }
+    void OnGameOver()
+    {
+        //update game state displays based on who has more discs
+        gameStateDisplay.text = "Game over.\n" + (blackDiscCount > whiteDiscCount ? "You win!" : (blackDiscCount < whiteDiscCount ? "CPU wins." : "Tie game"));
+        gameStateDisplay.color = blackDiscCount > whiteDiscCount ? Color.black : (blackDiscCount < whiteDiscCount ? Color.white : Color.gray);
+
+        optionsButton.gameObject.SetActive(false);
+        mainMenuButton.gameObject.SetActive(true);
     }
 }
