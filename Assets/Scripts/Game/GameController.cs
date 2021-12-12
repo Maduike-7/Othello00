@@ -7,15 +7,19 @@ using static CoroutineHelper;
 
 public class GameController : MonoBehaviour
 {
-    Camera mainCam;
+    [SerializeField] UserSettings userSettings;
+
+    [Space]
+
     [SerializeField] AudioController audioController;
     [SerializeField] Transform discParent;
     [SerializeField] GameObject hintDisc;
+    Camera mainCam;
 
     [Space]
 
     [Tooltip("Weighted chances that the CPU will make a certain move.\nLeft = worse move; Right = better move\nTop = higher chance; Bottom = lower chance")]
-    [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[MaxCPUDifficulty + 1];
+    [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[System.Enum.GetNames(typeof(UserSettings.CPUDifficulty)).Length];
 
     const int BoardSize = 8;
     readonly GameObject[,] gameBoard = new GameObject[BoardSize, BoardSize];
@@ -104,7 +108,7 @@ public class GameController : MonoBehaviour
         {
             GetMouseInput();
 
-            if (hintsEnabled)
+            if (userSettings.hintsOn)
             {
                 UpdateHints();
             }
@@ -119,7 +123,7 @@ public class GameController : MonoBehaviour
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
             //if raycast hit game board...
-            if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(MeshCollider))
+            if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(BoxCollider))
             {
                 (int row, int col) selectedCoordinate = InverseTransformPoint(hit);
 
@@ -190,7 +194,7 @@ public class GameController : MonoBehaviour
     {
         gameBoard[coordinate.row, coordinate.col].SetActive(true);
 
-        if (soundEnabled)
+        if (userSettings.soundOn)
         {
             DiscPlaceAction?.Invoke();
         }
@@ -336,6 +340,7 @@ public class GameController : MonoBehaviour
     //get coordinates of CPU's next move, based on <cpuDifficulty>
     (int row, int col) FindCPUMove()
     {
+        int cpuDifficulty = (int)userSettings.cpuDifficulty;
         List<float> moveSelectionWeights = new List<float>(validSpaces.Count);
 
         for (int i = 0; i < validSpaces.Count; i++)
@@ -372,7 +377,7 @@ public class GameController : MonoBehaviour
     {
         Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(MeshCollider))
+        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(BoxCollider))
         {
             //get board coordinate at where player moused over
             (int row, int col) coordinate = InverseTransformPoint(hit);

@@ -6,7 +6,13 @@ using static Globals;
 
 public class OptionsMenu : Menu
 {
-    [SerializeField] Toggle hintsToggle, soundToggle;
+    [SerializeField] UserSettings userSettings;
+
+    [Space]
+
+    [SerializeField] Toggle hintsToggle;
+    [SerializeField] Toggle soundToggle;
+
     [SerializeField] TMP_Dropdown cpuDifficultyDropdown;
 
     protected override void Awake()
@@ -15,35 +21,36 @@ public class OptionsMenu : Menu
         InitOptions();
     }
 
-    //init. options based on PlayerPrefs
+    //init. options based on UserSettings values
     void InitOptions()
     {
-        hintsToggle.isOn = PlayerPrefs.GetInt("Hints", 1) == 1 ? true : false;
-        hintsEnabled = hintsToggle.isOn;
-
-        soundToggle.isOn = PlayerPrefs.GetInt("Sound", 1) == 1 ? true : false;
-        soundEnabled = soundToggle.isOn;
+        hintsToggle.isOn = userSettings.hintsOn;
+        soundToggle.isOn = userSettings.soundOn;
 
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
         {
-            cpuDifficultyDropdown.value = PlayerPrefs.GetInt("CPU difficulty", 0);
-            cpuDifficulty = cpuDifficultyDropdown.value;
+            cpuDifficultyDropdown.value = (int)userSettings.cpuDifficulty;
         }
     }
 
     public void OnToggleHints()
     {
-        ToggleHints();
+        userSettings.hintsOn = hintsToggle.isOn;
     }
 
     public void OnToggleSound()
     {
-        ToggleSound();
+        userSettings.soundOn = soundToggle.isOn;
     }
 
-    public void OnCPUDifficultyChanged()
+    public void OnChangeCPUDifficulty()
     {
-        ChangeCPUDifficulty(cpuDifficultyDropdown.value);
+        userSettings.cpuDifficulty = (UserSettings.CPUDifficulty)cpuDifficultyDropdown.value;
+    }
+
+    public void SaveSettings()
+    {
+        FileHandler.SaveSettings(userSettings);
     }
 
     #region Game scene functions
@@ -66,5 +73,6 @@ public class OptionsMenu : Menu
         yield return null;
         inputEnabled = true;
     }
+
     #endregion
 }
