@@ -15,6 +15,11 @@ public class OptionsMenu : Menu
 
     [SerializeField] TMP_Dropdown cpuDifficultyDropdown;
 
+    [Space]
+
+    [SerializeField] RectTransform backgroundImages;
+    public event System.Action BackgroundChangeAction;
+
     protected override void Awake()
     {
         base.Awake();
@@ -46,6 +51,15 @@ public class OptionsMenu : Menu
     public void OnChangeCPUDifficulty()
     {
         userSettings.cpuDifficulty = (UserSettings.CPUDifficulty)cpuDifficultyDropdown.value;
+    }
+
+    public void OnChangeBackgroundImage(int value)
+    {
+        if (backgroundImages.GetComponentsInChildren<Toggle>()[value].isOn)
+        {
+            userSettings.backgroundImage = (UserSettings.BackgroundImage)value;
+            BackgroundChangeAction?.Invoke();
+        }
     }
 
     public void SaveSettings()
