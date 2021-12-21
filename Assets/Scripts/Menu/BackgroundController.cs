@@ -9,7 +9,7 @@ public class BackgroundController : MonoBehaviour
     [Space]
 
     [SerializeField] Image currentBackground;
-    [SerializeField] List<Image> backgroundImages;
+    [SerializeField] List<Sprite> backgroundImages;
 
     void Awake()
     {
@@ -18,6 +18,6 @@ public class BackgroundController : MonoBehaviour
 
     void OnChangeBackgroundImage()
     {
-        currentBackground.sprite = backgroundImages[(int)userSettings.backgroundImage].sprite;
+        currentBackground.sprite = backgroundImages[(int)userSettings.backgroundImage];
     }
 }
