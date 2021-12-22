@@ -1287,13 +1287,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 563237485}
-    characterCount: 6
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -1328,7 +1328,7 @@ PrefabInstance:
     - target: {fileID: 8801954794536698002, guid: 4e8818e654c16fc429f655de3fa226e4,
         type: 3}
       propertyPath: m_Name
-      value: Sunset (border)
+      value: OrangeLeaf (border)
       objectReference: {fileID: 0}
     - target: {fileID: 8801954794772349775, guid: 4e8818e654c16fc429f655de3fa226e4,
         type: 3}
@@ -2631,7 +2631,7 @@ PrefabInstance:
     - target: {fileID: 8801954794536698002, guid: 4e8818e654c16fc429f655de3fa226e4,
         type: 3}
       propertyPath: m_Name
-      value: BlueDot (border)
+      value: BlueBubble (border)
       objectReference: {fileID: 0}
     - target: {fileID: 8801954794772349775, guid: 4e8818e654c16fc429f655de3fa226e4,
         type: 3}
@@ -2792,7 +2792,7 @@ PrefabInstance:
     - target: {fileID: 8801954794772349773, guid: 4e8818e654c16fc429f655de3fa226e4,
         type: 3}
       propertyPath: m_Name
-      value: BlueDot (image)
+      value: BlueBubble (image)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e8818e654c16fc429f655de3fa226e4, type: 3}
@@ -3169,13 +3169,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1068532306}
-    characterCount: 14
+    characterCount: 0
     spriteCount: 0
-    spaceCount: 1
-    wordCount: 2
+    spaceCount: 0
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -5539,13 +5539,13 @@ MonoBehaviour:
   m_margin: {x: 16, y: 8, z: 16, w: 8}
   m_textInfo:
     textComponent: {fileID: 1807468415}
-    characterCount: 4
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -5769,13 +5769,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1829721531}
-    characterCount: 7
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -6199,13 +6199,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 2098714314}
-    characterCount: 10
+    characterCount: 0
     spriteCount: 0
     spaceCount: 0
-    wordCount: 1
+    wordCount: 0
     linkCount: 0
-    lineCount: 1
-    pageCount: 1
+    lineCount: 0
+    pageCount: 0
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
