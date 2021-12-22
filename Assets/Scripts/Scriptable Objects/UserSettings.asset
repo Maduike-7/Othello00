@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 242ca8e0962c1144db5bc60f849bac28, type: 3}
   m_Name: UserSettings
   m_EditorClassIdentifier: 
-  backgroundImage: 0
+  backgroundImage: 2
   cpuDifficulty: 0
   soundOn: 1
   hintsOn: 1

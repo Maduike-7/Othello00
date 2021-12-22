@@ -18,6 +18,7 @@ public class OptionsMenu : Menu
     [Space]
 
     [SerializeField] RectTransform backgroundImages;
+    Toggle[] backgroundToggles;
     public event System.Action BackgroundChangeAction;
 
     protected override void Awake()
@@ -29,12 +30,18 @@ public class OptionsMenu : Menu
     //init. options based on UserSettings values
     void InitOptions()
     {
+        backgroundToggles = backgroundImages.GetComponentsInChildren<Toggle>();
+
         hintsToggle.isOn = userSettings.hintsOn;
         soundToggle.isOn = userSettings.soundOn;
 
-        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
+        cpuDifficultyDropdown.value = (int)userSettings.cpuDifficulty;
+
+        BackgroundChangeAction?.Invoke();
+
+        for (int i = 0; i < backgroundToggles.Length; i++)
         {
-            cpuDifficultyDropdown.value = (int)userSettings.cpuDifficulty;
+            backgroundToggles[i].SetIsOnWithoutNotify(i == (int)userSettings.backgroundImage);
         }
     }
 
@@ -55,7 +62,7 @@ public class OptionsMenu : Menu
 
     public void OnChangeBackgroundImage(int value)
     {
-        if (backgroundImages.GetComponentsInChildren<Toggle>()[value].isOn)
+        if (backgroundToggles[value].isOn)
         {
             userSettings.backgroundImage = (UserSettings.BackgroundImage)value;
             BackgroundChangeAction?.Invoke();
@@ -64,7 +71,7 @@ public class OptionsMenu : Menu
 
     public void SaveSettings()
     {
-        FileHandler.SaveSettings(userSettings);
+        userSettings.Save();
     }
 
     #region Game scene functions

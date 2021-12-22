@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 
+[System.Serializable]
 [CreateAssetMenu(fileName = "New UserSettings", menuName = "Custom Data Type/User Settings")]
 public class UserSettings : ScriptableObject
 {
     public enum BackgroundImage
     {
         Wood,
-        BlueDot,
+        BlueBubble,
         PinkButterfly,
         GreenStripe,
         OrangeLeaf
