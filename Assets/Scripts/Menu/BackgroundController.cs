@@ -13,7 +13,12 @@ public class BackgroundController : MonoBehaviour
 
     void Awake()
     {
-        FindObjectOfType<OptionsMenu>().BackgroundChangeAction += OnChangeBackgroundImage;
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            FindObjectOfType<OptionsMenu>().BackgroundChangeAction += OnChangeBackgroundImage;
+        }
+
+        OnChangeBackgroundImage();
     }
 
     void OnChangeBackgroundImage()

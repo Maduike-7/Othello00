@@ -56,6 +56,8 @@ public class GameController : MonoBehaviour
         mainCam = Camera.main;
         GameOverAction += OnGameOver;
 
+        FindObjectOfType<PauseHandler>().GamePauseAction += OnGamePaused;
+
         InitGameBoard();
     }
 
@@ -395,6 +397,11 @@ public class GameController : MonoBehaviour
                 hintDisc.SetActive(false);
             }
         }
+    }
+
+    void OnGamePaused(bool state)
+    {
+        enabled = !state;
     }
 
     void OnGameOver()

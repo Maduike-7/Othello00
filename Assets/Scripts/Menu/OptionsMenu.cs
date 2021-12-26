@@ -37,8 +37,6 @@ public class OptionsMenu : Menu
 
         cpuDifficultyDropdown.value = (int)userSettings.cpuDifficulty;
 
-        BackgroundChangeAction?.Invoke();
-
         for (int i = 0; i < backgroundToggles.Length; i++)
         {
             backgroundToggles[i].SetIsOnWithoutNotify(i == (int)userSettings.backgroundImage);
