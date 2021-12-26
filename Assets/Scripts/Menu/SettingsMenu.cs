@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using static Globals;
 
-public class OptionsMenu : Menu
+public class SettingsMenu : Menu
 {
     [SerializeField] UserSettings userSettings;
 

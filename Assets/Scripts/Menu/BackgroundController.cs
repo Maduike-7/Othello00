@@ -15,7 +15,7 @@ public class BackgroundController : MonoBehaviour
     {
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex == 0)
         {
-            FindObjectOfType<OptionsMenu>().BackgroundChangeAction += OnChangeBackgroundImage;
+            FindObjectOfType<SettingsMenu>().BackgroundChangeAction += OnChangeBackgroundImage;
         }
 
         OnChangeBackgroundImage();
