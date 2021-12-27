@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] AudioController audioController;
     [SerializeField] Transform discParent;
-    [SerializeField] GameObject hintDisc;
+    [SerializeField] GameObject hintDiscParent;
     Camera mainCam;
 
     [Space]
@@ -23,6 +23,7 @@ public class GameController : MonoBehaviour
 
     const int BoardSize = 8;
     readonly GameObject[,] gameBoard = new GameObject[BoardSize, BoardSize];
+    readonly GameObject[,] hintDiscs = new GameObject[BoardSize, BoardSize];
 
     Vector3Int[] checkDirections = new Vector3Int[8]
     {
@@ -69,6 +70,7 @@ public class GameController : MonoBehaviour
             {
                 //set elements in gameBoard
                 gameBoard[row, col] = discParent.GetChild(row * BoardSize + col).gameObject;
+                hintDiscs[row, col] = hintDiscParent.transform.GetChild(row * BoardSize + col).gameObject;
 
                 //set edge and corner coordinates
                 if (row == 0 || col == 0 || row == BoardSize - 1 || col == BoardSize - 1)
@@ -89,6 +91,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         ResetGameState();
+        ShowHints();
     }
 
     void ResetGameState()
@@ -109,11 +112,6 @@ public class GameController : MonoBehaviour
         if (inputEnabled && playerTurn)
         {
             GetMouseInput();
-
-            if (userSettings.hintsOn)
-            {
-                UpdateHints();
-            }
         }
     }
 
@@ -134,6 +132,7 @@ public class GameController : MonoBehaviour
                 {
                     FindValidDirections(selectedCoordinate);
                     StartCoroutine(MakeMove(selectedCoordinate));
+                    HideHints();
                 }
             }
         }
@@ -201,7 +200,7 @@ public class GameController : MonoBehaviour
             DiscPlaceAction?.Invoke();
         }
 
-        //call FlipInDirection() for all items in validDirections[]
+        //call FlipInDirection() for all items in validDirections
         for (int i = 0; i < validDirections.Count; i++)
         {
             FlipInDirection(coordinate, validDirections[i].direction, validDirections[i].flipCount);
@@ -265,18 +264,41 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            //pass the turn over; look for validSpaces given <playerTurn> in new board state
+            //pass the turn over
             playerTurn = !playerTurn;
-            FindValidSpaces(playerTurn);
+
+            //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
+            validSpaces.Clear();
+
+            for (int row = 0; row < BoardSize; row++)
+            {
+                for (int col = 0; col < BoardSize; col++)
+                {
+                    if (!gameBoard[row, col].activeInHierarchy)
+                    {
+                        FindValidDirections((row, col));
+
+                        //if placing a disc at [row, col] makes for valid move, add to validSpaces[], with total number of discs flipped
+                        if (validDirections.Count > 0)
+                        {
+                            int totalFlipCount = validDirections.Sum(i => i.flipCount);
+                            validSpaces.Add(((row, col), totalFlipCount));
+                        }
+                    }
+                }
+            }
 
             //if at least 1 valid move exists...
             if (validSpaces.Count > 0)
             {
                 turnsPassed = 0;
 
-                if (!playerTurn)
+                if (playerTurn)
                 {
-                    hintDisc.SetActive(false);
+                    ShowHints();
+                }
+                else
+                {
                     StartCoroutine(RunCPU());
                 }
             }
@@ -295,31 +317,6 @@ public class GameController : MonoBehaviour
         }
 
         ScoreUpdateAction?.Invoke();
-    }
-
-    //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
-    //(true = player's turn = black; false = CPU's turn = white)
-    void FindValidSpaces(bool playerTurn)
-    {
-        validSpaces.Clear();
-
-        for (int row = 0; row < BoardSize; row++)
-        {
-            for (int col = 0; col < BoardSize; col++)
-            {
-                if (!gameBoard[row, col].activeInHierarchy)
-                {
-                    FindValidDirections((row, col));
-
-                    //if placing a disc at [row, col] makes for valid move, add to validSpaces[], with total number of discs flipped
-                    if (validDirections.Count > 0)
-                    {
-                        int totalFlipCount = validDirections.Sum(i => i.flipCount);
-                        validSpaces.Add(((row, col), totalFlipCount));
-                    }
-                }
-            }
-        }
     }
 
     IEnumerator RunCPU()
@@ -375,26 +372,30 @@ public class GameController : MonoBehaviour
         return weights.Count - 1;
     }
 
-    void UpdateHints()
+    void ShowHints()
     {
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+        if (!userSettings.hintsOn) { return; }
 
-        if (Physics.Raycast(ray, out RaycastHit hit) && hit.collider.GetType() == typeof(BoxCollider))
+        HideHints();
+
+        //if there are any coordinates that the player can place a disc on
+        if (validSpaces.Any())
         {
-            //get board coordinate at where player moused over
-            (int row, int col) coordinate = InverseTransformPoint(hit);
+            //display hint disc for each valid space
+            validSpaces.ForEach(i =>
+            {
+                hintDiscs[i.coordinate.row, i.coordinate.col].SetActive(true);
+            });
+        }
+    }
 
-            //if placing a disc at coordinate would result in a valid move
-            if (validSpaces.Any(i => i.coordinate == coordinate))
+    void HideHints()
+    {
+        for (int i = 0; i < hintDiscs.GetLength(0); i++)
+        {
+            for (int j = 0; j < hintDiscs.GetLength(1); j++)
             {
-                //show hintDisc, and position it at coordinate's transform.position
-                hintDisc.transform.localPosition = gameBoard[coordinate.row, coordinate.col].transform.position;
-                hintDisc.SetActive(true);
-            }
-            //otherwise hide hintDisc
-            else
-            {
-                hintDisc.SetActive(false);
+                hintDiscs[i, j].SetActive(false);
             }
         }
     }
