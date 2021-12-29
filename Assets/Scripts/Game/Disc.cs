@@ -1,52 +1,48 @@
 ﻿using System.Collections;
 using UnityEngine;
-using static Globals;
 using static CoroutineHelper;
 
 public class Disc : MonoBehaviour
 {
-    readonly AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);    
+    readonly AnimationCurve flipAnimationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-    void OnEnable()
-    {
-        //increment disc count based on whose turn it is
-        if (playerTurn) { blackDiscCount++; }
-        else { whiteDiscCount++; }
-    }
+    int BlackDiscLayer => LayerMask.NameToLayer("Black Disc");
+    int WhiteDiscLayer => LayerMask.NameToLayer("White Disc");
+    public bool IsBlack => gameObject.layer == BlackDiscLayer;
 
-    public void FlipUponAxis(Vector3 flipAxis, float flipDelay = 0f)
+    public void FlipUponAxis(Vector3 flipAxis, float flipDuration = 0f, float flipDelay = 0f)
     {
         //toggle layer (white <-> black)
-        gameObject.layer = gameObject.layer == blackDiscLayer ? whiteDiscLayer : blackDiscLayer;
+        gameObject.layer = IsBlack ? WhiteDiscLayer : BlackDiscLayer;
 
         //if this disc is visible in scene, start rotate animation
-        if (gameObject.activeSelf)
+        if (gameObject.activeSelf && flipDuration > 0f)
         {
-            Quaternion startRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 180 : 0, flipAxis);
-            Quaternion endRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 0 : 180, flipAxis);
+            Quaternion startRotation = Quaternion.AngleAxis(IsBlack ? 180 : 0, flipAxis);
+            Quaternion endRotation = Quaternion.AngleAxis(IsBlack ? 0 : 180, flipAxis);
 
-            StartCoroutine(Rotate(startRotation, endRotation, flipDelay));
+            StartCoroutine(Rotate(startRotation, endRotation, flipDuration, flipDelay));
         }
         //otherwise just set its rotation
         else
         {
-            transform.localRotation = Quaternion.AngleAxis(gameObject.layer == blackDiscLayer ? 0 : 180, flipAxis);
+            transform.localRotation = Quaternion.AngleAxis(IsBlack ? 0 : 180, flipAxis);
         }
     }
 
     //lerp rotation from <startRot> to <endRot>
-    IEnumerator Rotate(Quaternion startRot, Quaternion endRot, float flipDelay)
+    IEnumerator Rotate(Quaternion startRot, Quaternion endRot, float flipDuration, float flipDelay)
     {
         Vector3 originalPos = transform.localPosition;
         float currentLerpTime = 0f;
 
         yield return WaitForSeconds(flipDelay);
 
-        while (currentLerpTime <= FlipAnimationDuration)
+        while (currentLerpTime <= flipDuration)
         {
             yield return EndOfFrame;
             currentLerpTime += Time.deltaTime;
-            float t = currentLerpTime / FlipAnimationDuration;
+            float t = currentLerpTime / flipDuration;
 
             //set rotation
             transform.localRotation = Quaternion.Lerp(startRot, endRot, flipAnimationCurve.Evaluate(t));

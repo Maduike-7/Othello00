@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static Globals;
 
 public class SettingsMenu : Menu
 {

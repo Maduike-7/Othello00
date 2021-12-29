@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Globals;
 using static CoroutineHelper;
 
 public class GameController : MonoBehaviour
@@ -20,6 +19,11 @@ public class GameController : MonoBehaviour
 
     [Tooltip("Weighted chances that the CPU will make a certain move.\nLeft = worse move; Right = better move\nTop = higher chance; Bottom = lower chance")]
     [SerializeField] AnimationCurve[] cpuDifficultyCurves = new AnimationCurve[System.Enum.GetNames(typeof(UserSettings.CPUDifficulty)).Length];
+
+    public event System.Action DiscPlaceAction;
+    public event System.Action<float> DiscFlipAction;
+    public event System.Action ScoreUpdateAction;
+    public event System.Action GameOverAction;
 
     const int BoardSize = 8;
     readonly GameObject[,] gameBoard = new GameObject[BoardSize, BoardSize];
@@ -47,32 +51,36 @@ public class GameController : MonoBehaviour
     List<(int, int)> corners = new List<(int, int)>(4);
     List<(int, int)> edges = new List<(int, int)>((BoardSize - 1) * 4);
 
-    public event System.Action DiscPlaceAction;
-    public event System.Action<float> DiscFlipAction;
-    public event System.Action ScoreUpdateAction;
-    public event System.Action GameOverAction;
+    int BlackDiscLayer => LayerMask.NameToLayer("Black Disc");
+    int WhiteDiscLayer => LayerMask.NameToLayer("White Disc");
+
+    public (int black, int white) discCount = (2, 2);
+    public bool PlayerTurn { get; private set; } = true;
+    bool inputEnabled = true;
+
+    const float FlipAnimationDuration = 0.5f;
+    const float FlipAnimationDelay = 0.1f;
 
     void Awake()
     {
         mainCam = Camera.main;
         GameOverAction += OnGameOver;
-
         FindObjectOfType<PauseHandler>().GamePauseAction += OnGamePaused;
 
-        InitGameBoard();
+        InitGame();
     }
 
-    void InitGameBoard()
+    void InitGame()
     {
         for (int row = 0; row < BoardSize; row++)
         {
             for (int col = 0; col < BoardSize; col++)
             {
-                //set elements in gameBoard
+                //get game board elements
                 gameBoard[row, col] = discParent.GetChild(row * BoardSize + col).gameObject;
                 hintDiscs[row, col] = hintDiscParent.transform.GetChild(row * BoardSize + col).gameObject;
 
-                //set edge and corner coordinates
+                //get edge and corner coordinates
                 if (row == 0 || col == 0 || row == BoardSize - 1 || col == BoardSize - 1)
                 {
                     if ((row == 0 || row == BoardSize - 1) && (col == 0 || col == BoardSize - 1))
@@ -86,20 +94,6 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-    }
-
-    void Start()
-    {
-        ResetGameState();
-        ShowHints();
-    }
-
-    void ResetGameState()
-    {
-        inputEnabled = true;
-        playerTurn = true;
-        whiteDiscCount = 2;
-        blackDiscCount = 2;
 
         validSpaces.Add(((2, 4), 1));
         validSpaces.Add(((3, 5), 1));
@@ -107,9 +101,14 @@ public class GameController : MonoBehaviour
         validSpaces.Add(((5, 3), 1));
     }
 
+    void Start()
+    {
+        ShowHints();
+    }
+
     void Update()
     {
-        if (inputEnabled && playerTurn)
+        if (inputEnabled && PlayerTurn)
         {
             GetMouseInput();
         }
@@ -117,7 +116,6 @@ public class GameController : MonoBehaviour
 
     void GetMouseInput()
     {
-        //0 = L. mouse button released
         if (Input.GetMouseButtonUp(0))
         {
             Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
@@ -162,7 +160,7 @@ public class GameController : MonoBehaviour
     {
         Vector3 rayOrigin = gameBoard[coordinate.row, coordinate.col].transform.position;
         float rayDistance = direction.normalized.magnitude;
-        int currentColourLayer = playerTurn ? blackDiscLayer : whiteDiscLayer;
+        int currentColourLayer = PlayerTurn ? BlackDiscLayer : WhiteDiscLayer;
         int flipCount = 0;
 
         //continuously raycast to check for a disc of opposite colour
@@ -195,6 +193,15 @@ public class GameController : MonoBehaviour
     {
         gameBoard[coordinate.row, coordinate.col].SetActive(true);
 
+        if (PlayerTurn)
+        {
+            discCount.black++;
+        }
+        else
+        {
+            discCount.white++;
+        }
+
         if (userSettings.soundOn)
         {
             DiscPlaceAction?.Invoke();
@@ -223,27 +230,26 @@ public class GameController : MonoBehaviour
         for (int i = 1; i <= flipLength; i++)
         {
             //set flip axis such that it looks like discs are flipping outward from position of placed disc
-            Vector3 flipAxis = Vector3.Cross(direction, gameBoard[coordinate.row, coordinate.col].layer == blackDiscLayer ? Vector3.forward : Vector3.back);
+            Vector3 flipAxis = Vector3.Cross(direction, gameBoard[coordinate.row, coordinate.col].layer == BlackDiscLayer ? Vector3.forward : Vector3.back);
 
             //set flip delay based on flipLength such that it looks like discs are flipping one after another, instead of all at once
             float flipDelay = i * FlipAnimationDelay;
 
-            gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis, flipDelay);
+            gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis, FlipAnimationDuration, flipDelay);
 
             //play disc flip sfx
             DiscFlipAction?.Invoke(flipDelay + FlipAnimationDuration);
 
-            //increment/decrement disc counts accordingly
-            //(player always plays as black)
-            if (playerTurn)
+            //increment/decrement disc counts accordingly (player always plays as black)
+            if (PlayerTurn)
             {
-                blackDiscCount++;
-                whiteDiscCount--;
+                discCount.black++;
+                discCount.white--;
             }
             else
             {
-                blackDiscCount--;
-                whiteDiscCount++;
+                discCount.black--;
+                discCount.white++;
             }
         }
     }
@@ -265,7 +271,7 @@ public class GameController : MonoBehaviour
             }
 
             //pass the turn over
-            playerTurn = !playerTurn;
+            PlayerTurn = !PlayerTurn;
 
             //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
             validSpaces.Clear();
@@ -293,7 +299,7 @@ public class GameController : MonoBehaviour
             {
                 turnsPassed = 0;
 
-                if (playerTurn)
+                if (PlayerTurn)
                 {
                     ShowHints();
                 }
@@ -328,7 +334,7 @@ public class GameController : MonoBehaviour
 
         (int row, int col) selectedCoordinate = FindCPUMove();
 
-        //more possible valid spaces = longer wait time (to make it seem a bit more R E A L I S T I C)
+        //more possible valid spaces = longer wait time (for added realism)
         float cpuDelay = validSpaces.Count / 8f + 1;
         yield return WaitForSeconds(cpuDelay);
 
