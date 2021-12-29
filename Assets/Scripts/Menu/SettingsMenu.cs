@@ -71,27 +71,4 @@ public class SettingsMenu : Menu
     {
         userSettings.Save();
     }
-
-    #region Game scene functions
-
-    public void ShowOptionsMenu()
-    {
-        Open();
-        inputEnabled = false;
-    }
-
-    public void OnSelectResume()
-    {
-        StartCoroutine(HideOptionsMenu());
-    }
-
-    //this is a coroutine because otherwise, clicking the resume button would register a click on the game board on the same frame
-    IEnumerator HideOptionsMenu()
-    {
-        Close();
-        yield return null;
-        inputEnabled = true;
-    }
-
-    #endregion
 }

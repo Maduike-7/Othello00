@@ -7,7 +7,6 @@ public class PauseMenu : Menu
     protected override void Awake()
     {
         base.Awake();
-
         pauseHandler.GamePauseAction += OnGamePaused;
     }
 
@@ -25,7 +24,7 @@ public class PauseMenu : Menu
 
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonUp("Cancel"))
         {
             pauseHandler.SetGamePaused(false);
         }

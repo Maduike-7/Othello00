@@ -1,11 +1,10 @@
-﻿public class MainMenu : Menu
+﻿using UnityEngine;
+
+public class MainMenu : Menu
 {
-    public void OnSelectQuit()
+    public override void HandleBackButtonInput()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else 
-        Application.Quit();
-#endif
+        AndroidJavaObject androidJavaObject = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
+        androidJavaObject.Call<bool>("moveTaskToBack", true);
     }
 }

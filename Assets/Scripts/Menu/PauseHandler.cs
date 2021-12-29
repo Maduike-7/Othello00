@@ -13,7 +13,7 @@ public class PauseHandler : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonUp("Cancel"))
         {
             SetGamePaused(!isPaused);
         }

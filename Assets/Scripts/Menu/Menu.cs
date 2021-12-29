@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Canvas))]
-public class Menu : MonoBehaviour
+public abstract class Menu : MonoBehaviour
 {
     protected Canvas thisMenu;
 
@@ -39,4 +40,19 @@ public class Menu : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex);
     }
+
+#if UNITY_ANDROID
+    void Update()
+    {
+        if (Input.GetButtonUp("Cancel"))
+        {
+            HandleBackButtonInput();
+        }
+    }
+
+    public virtual void HandleBackButtonInput()
+    {
+        GetComponentInChildren<Button>().onClick.Invoke();
+    }
+#endif
 }
