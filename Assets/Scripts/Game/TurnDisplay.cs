@@ -6,7 +6,9 @@ using static CoroutineHelper;
 public class TurnDisplay : MonoBehaviour
 {
     TextMeshProUGUI turnText;
+
     IEnumerator textAnimation;
+    [SerializeField] AnimationCurve textAnimationInterpolation;
 
     void Awake()
     {
@@ -16,16 +18,7 @@ public class TurnDisplay : MonoBehaviour
 
     void UpdateTurnText(bool playerTurn, int numTurnsPassed)
     {
-        string text = $"{playerTurn}, {numTurnsPassed}";
-
-        if (numTurnsPassed > 0)
-        {
-            //to-do
-        }
-        if (playerTurn)
-        {
-            //to-do
-        }
+        string text = $"{(numTurnsPassed > 0 ? "No valid moves.\n" : "")}{(playerTurn ? "Player's" : "CPU's")} turn{(numTurnsPassed > 0 ? " again.": ".")}";
 
         if (textAnimation != null)
         {
@@ -39,6 +32,17 @@ public class TurnDisplay : MonoBehaviour
     IEnumerator AnimateTurnText(string _text)
     {
         turnText.text = _text;
-        yield return null;
+
+        float currentLerpTime = 0f, totalLerpTime = 0.5f;
+
+        while (currentLerpTime < totalLerpTime)
+        {
+            Color c = turnText.color;
+            c.a = textAnimationInterpolation.Evaluate(currentLerpTime / totalLerpTime);
+            turnText.color = c;
+
+            yield return EndOfFrame;
+            currentLerpTime += Time.deltaTime;
+        }
     }
 }
