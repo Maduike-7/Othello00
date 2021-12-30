@@ -222,8 +222,7 @@ public class GameController : MonoBehaviour
         yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
-        int turnsPassed = 0;
-        PassTurn(ref turnsPassed);
+        PassTurn(0);
     }
 
     //start Disc.FlipUponAxis() coroutine for all discs that should be flipped
@@ -257,10 +256,8 @@ public class GameController : MonoBehaviour
     }
 
     //handle events that happen between turns
-    void PassTurn(ref int _turnsPassed)
+    void PassTurn(int turnsPassed)
     {
-        int turnsPassed = _turnsPassed;
-
         if (turnsPassed < 2)
         {
             //flip all inactive discs
@@ -309,13 +306,12 @@ public class GameController : MonoBehaviour
                 }
 
                 TurnPassAction?.Invoke(playerTurn, turnsPassed);
-                turnsPassed = 0;
             }
             //if a valid move doesn't exist, increment turnsPassed counter; call this function again
             else
             {
                 turnsPassed++;
-                PassTurn(ref turnsPassed);
+                PassTurn(turnsPassed);
             }
         }
         //game is over when turn has been passed twice without a move being made
@@ -338,7 +334,7 @@ public class GameController : MonoBehaviour
         (int row, int col) selectedCoordinate = FindCPUMove();
 
         //more possible valid spaces = longer wait time (for added realism)
-        float cpuDelay = validSpaces.Count / 8f + 1;
+        float cpuDelay = 0.5f + (validSpaces.Count / 8f);
         yield return WaitForSeconds(cpuDelay);
 
         FindValidDirections(selectedCoordinate);
