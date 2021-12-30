@@ -8,6 +8,7 @@ public class PauseHandler : MonoBehaviour
 
     void Awake()
     {
+        FindObjectOfType<GameController>().GameOverAction += OnGameOver;
         GamePauseAction += OnGamePaused;
     }
 
@@ -27,5 +28,10 @@ public class PauseHandler : MonoBehaviour
     void OnGamePaused(bool state)
     {
         isPaused = state;
+    }
+
+    void OnGameOver()
+    {
+        enabled = false;
     }
 }
