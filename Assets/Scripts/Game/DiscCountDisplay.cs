@@ -10,9 +10,9 @@ public class DiscCountDisplay : MonoBehaviour
         FindObjectOfType<GameController>().ScoreUpdateAction += UpdateDiscCount;
     }
 
-    void UpdateDiscCount(int blackCount, int whiteCount)
+    void UpdateDiscCount(int blackDiscCount, int whiteDiscCount)
     {
-        blackDiscCountText.text = blackCount.ToString();
-        whiteDiscCountText.text = whiteCount.ToString();
+        blackDiscCountText.text = blackDiscCount.ToString();
+        whiteDiscCountText.text = whiteDiscCount.ToString();
     }
 }

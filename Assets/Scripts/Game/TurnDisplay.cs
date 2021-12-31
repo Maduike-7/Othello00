@@ -10,26 +10,46 @@ public class TurnDisplay : MonoBehaviour
     IEnumerator textAnimation;
     [SerializeField] AnimationCurve textAnimationInterpolation;
 
+    GameController gc;
+
     void Awake()
     {
         turnText = GetComponent<TextMeshProUGUI>();
-        FindObjectOfType<GameController>().TurnPassAction += UpdateTurnText;
+
+        gc = FindObjectOfType<GameController>();
+        gc.TurnPassAction += OnTurnPass;
+        gc.GameOverAction += OnGameOver; 
     }
 
-    void UpdateTurnText(bool playerTurn, int numTurnsPassed)
+    void OnTurnPass(bool playerTurn, int numTurnsPassed)
     {
-        string text = $"{(numTurnsPassed > 0 ? "No valid moves. " : "")}{(playerTurn ? "Player's" : "CPU's")} turn{(numTurnsPassed > 0 ? " again.": ".")}";
+        if (numTurnsPassed > 1) return;
 
+        string text = $"{(numTurnsPassed > 0 ? "No valid moves. " : "")}{(playerTurn ? "Player's" : "CPU's")} turn{(numTurnsPassed > 0 ? " again.": ".")}";
+        AnimateText(text);
+    }
+
+    void OnGameOver()
+    {
+        int blackDiscCount = gc.discCount.black;
+        int whiteDiscCount = gc.discCount.white;
+
+        string text = $"Game over. {(blackDiscCount > whiteDiscCount ? "You win!" : blackDiscCount == whiteDiscCount ? "The result is a draw." : "CPU wins." )}";
+        AnimateText(text);
+    }
+
+    void AnimateText(string text)
+    {
         if (textAnimation != null)
         {
             StopCoroutine(textAnimation);
         }
 
-        textAnimation = AnimateTurnText(text);
+        textAnimation = _AnimateText(text);
         StartCoroutine(textAnimation);
     }
 
-    IEnumerator AnimateTurnText(string _text)
+    IEnumerator _AnimateText(string _text)
     {
         turnText.text = _text;
 
