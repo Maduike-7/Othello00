@@ -18,7 +18,7 @@ public class TurnDisplay : MonoBehaviour
 
     void UpdateTurnText(bool playerTurn, int numTurnsPassed)
     {
-        string text = $"{(numTurnsPassed > 0 ? "No valid moves.\n" : "")}{(playerTurn ? "Player's" : "CPU's")} turn{(numTurnsPassed > 0 ? " again.": ".")}";
+        string text = $"{(numTurnsPassed > 0 ? "No valid moves. " : "")}{(playerTurn ? "Player's" : "CPU's")} turn{(numTurnsPassed > 0 ? " again.": ".")}";
 
         if (textAnimation != null)
         {
