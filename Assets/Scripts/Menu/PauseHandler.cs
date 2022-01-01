@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using static CoroutineHelper;
 
 public class PauseHandler : MonoBehaviour
 {
@@ -9,10 +11,15 @@ public class PauseHandler : MonoBehaviour
     public event Action<bool> GamePauseAction;
     bool isPaused;
 
+    IEnumerator disablePauseCoroutine;
+
     void Awake()
     {
-        FindObjectOfType<GameController>().GameOverAction += OnGameOver;
         GamePauseAction += OnGamePaused;
+
+        GameController gc = FindObjectOfType<GameController>();
+        gc.DiscFlipAction += OnDiscFlip;
+        gc.GameOverAction += OnGameOver;
     }
 
     void Update()
@@ -31,6 +38,28 @@ public class PauseHandler : MonoBehaviour
     void OnGamePaused(bool state)
     {
         isPaused = state;
+    }
+
+    void OnDiscFlip(float flipDuration)
+    {
+        if (disablePauseCoroutine != null)
+        {
+            StopCoroutine(disablePauseCoroutine);
+        }
+
+        disablePauseCoroutine = DisablePause(flipDuration);
+        StartCoroutine(disablePauseCoroutine);
+    }
+
+    IEnumerator DisablePause(float duration)
+    {
+        enabled = false;
+        pauseButton.enabled = false;
+
+        yield return WaitForSeconds(duration);
+
+        enabled = true;
+        pauseButton.enabled = true;
     }
 
     void OnGameOver()
