@@ -1,8 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PauseHandler : MonoBehaviour
 {
+    [SerializeField] Button pauseButton;
+
     public event Action<bool> GamePauseAction;
     bool isPaused;
 
@@ -32,6 +35,7 @@ public class PauseHandler : MonoBehaviour
 
     void OnGameOver()
     {
+        pauseButton.enabled = false;
         enabled = false;
     }
 }

@@ -34,7 +34,7 @@ public class TurnDisplay : MonoBehaviour
         int blackDiscCount = gc.discCount.black;
         int whiteDiscCount = gc.discCount.white;
 
-        string text = $"Game over. {(blackDiscCount > whiteDiscCount ? "You win!" : blackDiscCount == whiteDiscCount ? "The result is a draw." : "CPU wins." )}";
+        string text = blackDiscCount > whiteDiscCount ? "You win!" : blackDiscCount == whiteDiscCount ? "The result is a draw." : "CPU wins.";
         AnimateText(text);
     }
 
