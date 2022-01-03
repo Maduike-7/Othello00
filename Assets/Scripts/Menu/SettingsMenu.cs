@@ -19,6 +19,9 @@ public class SettingsMenu : Menu
     Toggle[] backgroundToggles;
     public event System.Action BackgroundChangeAction;
 
+    [SerializeField] RectTransform boardColours;
+    Toggle[] colourToggles;
+
     protected override void Awake()
     {
         base.Awake();
@@ -29,6 +32,7 @@ public class SettingsMenu : Menu
     void InitOptions()
     {
         backgroundToggles = backgroundImages.GetComponentsInChildren<Toggle>();
+        colourToggles = boardColours.GetComponentsInChildren<Toggle>();
 
         hintsToggle.isOn = userSettings.hintsOn;
         soundToggle.isOn = userSettings.soundOn;
@@ -38,6 +42,11 @@ public class SettingsMenu : Menu
         for (int i = 0; i < backgroundToggles.Length; i++)
         {
             backgroundToggles[i].SetIsOnWithoutNotify(i == (int)userSettings.backgroundImage);
+        }
+
+        for (int i = 0; i < colourToggles.Length; i++)
+        {
+            colourToggles[i].SetIsOnWithoutNotify(i == (int)userSettings.boardColour);
         }
     }
 
@@ -62,6 +71,14 @@ public class SettingsMenu : Menu
         {
             userSettings.backgroundImage = (UserSettings.BackgroundImage)value;
             BackgroundChangeAction?.Invoke();
+        }
+    }
+
+    public void OnChangeBoardColour(int value)
+    {
+        if (colourToggles[value].isOn)
+        {
+            userSettings.boardColour = (UserSettings.BoardColour)value;
         }
     }
 

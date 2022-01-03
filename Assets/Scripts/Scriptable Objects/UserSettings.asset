@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: UserSettings
   m_EditorClassIdentifier: 
   backgroundImage: 0
-  cpuDifficulty: 1
+  boardColour: 0
+  cpuDifficulty: 0
   soundOn: 1
   hintsOn: 1

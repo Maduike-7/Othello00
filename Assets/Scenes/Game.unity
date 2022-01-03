@@ -2115,13 +2115,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 409286716}
-    characterCount: 0
+    characterCount: 6
     spriteCount: 0
     spaceCount: 0
-    wordCount: 0
+    wordCount: 1
     linkCount: 0
-    lineCount: 0
-    pageCount: 0
+    lineCount: 1
+    pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -3585,7 +3585,7 @@ Canvas:
   m_GameObject: {fileID: 598187878}
   m_Enabled: 0
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -6899,7 +6899,7 @@ Canvas:
   m_GameObject: {fileID: 1013128628}
   m_Enabled: 0
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -7693,13 +7693,13 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1117438839}
-    characterCount: 0
+    characterCount: 9
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 0
+    spaceCount: 1
+    wordCount: 2
     linkCount: 0
-    lineCount: 0
-    pageCount: 0
+    lineCount: 1
+    pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
@@ -9013,6 +9013,12 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 72
       objectReference: {fileID: 0}
+    - target: {fileID: 1753758977032521098, guid: 13a38fb439f8f6b48977c77a90244089,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9dc1ac4013bc9014eace027510570650,
+        type: 3}
     - target: {fileID: 5919282732383303807, guid: 13a38fb439f8f6b48977c77a90244089,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -9038,12 +9044,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: -1
       objectReference: {fileID: 0}
-    - target: {fileID: 1753758977032521098, guid: 13a38fb439f8f6b48977c77a90244089,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9dc1ac4013bc9014eace027510570650,
-        type: 3}
     - target: {fileID: 4691836958389422076, guid: 13a38fb439f8f6b48977c77a90244089,
         type: 3}
       propertyPath: m_EffectDistance.x
@@ -9069,6 +9069,7 @@ GameObject:
   - component: {fileID: 1289608505}
   - component: {fileID: 1289608504}
   - component: {fileID: 1289608503}
+  - component: {fileID: 1289608506}
   m_Layer: 0
   m_Name: Board (cube)
   m_TagString: Untagged
@@ -9121,6 +9122,10 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: ecdf77423a1eeab4997a54c84a7c8d6f, type: 2}
+  - {fileID: 2100000, guid: 17dfd8e13e7b98248a28c7608c27d11f, type: 2}
+  - {fileID: 2100000, guid: 5afc188b9c878d34dae832e03a39bfc0, type: 2}
+  - {fileID: 2100000, guid: e8e47e05811f4da46a470250cc9d7a68, type: 2}
+  - {fileID: 2100000, guid: 1985e6ae7846ed74bbad970d9bed816f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9149,6 +9154,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1289608501}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1289608506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1289608501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39fd5c7d086f9134e82170b7f334d8c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userSettings: {fileID: 11400000, guid: d9ae5cd5342bb6f4680e2a02116626f8, type: 2}
 --- !u!1001 &1297131240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11654,6 +11672,12 @@ PrefabInstance:
       propertyPath: m_fontSizeBase
       value: 72
       objectReference: {fileID: 0}
+    - target: {fileID: 1753758977032521098, guid: 13a38fb439f8f6b48977c77a90244089,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9dc1ac4013bc9014eace027510570650,
+        type: 3}
     - target: {fileID: 5919282732383303807, guid: 13a38fb439f8f6b48977c77a90244089,
         type: 3}
       propertyPath: m_AnchorMin.x
@@ -11679,12 +11703,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: -1
       objectReference: {fileID: 0}
-    - target: {fileID: 1753758977032521098, guid: 13a38fb439f8f6b48977c77a90244089,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9dc1ac4013bc9014eace027510570650,
-        type: 3}
     - target: {fileID: 4691836958389422076, guid: 13a38fb439f8f6b48977c77a90244089,
         type: 3}
       propertyPath: m_EffectDistance.x

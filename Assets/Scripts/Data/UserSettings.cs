@@ -13,6 +13,15 @@ public class UserSettings : ScriptableObject
         OrangeLeaf
     }
 
+    public enum BoardColour
+    {
+        Green,
+        Blue,
+        Orange,
+        Purple,
+        Grey
+    }
+
     public enum CPUDifficulty
     {
         Easy,
@@ -20,9 +29,11 @@ public class UserSettings : ScriptableObject
         Hard
     }
 
-    public BackgroundImage backgroundImage;
-    public CPUDifficulty cpuDifficulty;
+    public BackgroundImage backgroundImage = 0;
+    public BoardColour boardColour = 0;
 
-    public bool soundOn;
-    public bool hintsOn;
+    public CPUDifficulty cpuDifficulty = 0;
+
+    public bool soundOn = true;
+    public bool hintsOn = true;
 }
