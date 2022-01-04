@@ -11,15 +11,16 @@ public class SettingsMenu : Menu
     [SerializeField] Toggle hintsToggle;
     [SerializeField] Toggle soundToggle;
 
-    [SerializeField] TMP_Dropdown cpuDifficultyDropdown;
+    [SerializeField] ToggleGroup difficultySettings;
+    Toggle[] difficultyToggles;
 
     [Space]
 
-    [SerializeField] RectTransform backgroundImages;
+    [SerializeField] ToggleGroup backgroundImages;
     Toggle[] backgroundToggles;
     public event System.Action BackgroundChangeAction;
 
-    [SerializeField] RectTransform boardColours;
+    [SerializeField] ToggleGroup boardColours;
     Toggle[] colourToggles;
 
     protected override void Awake()
@@ -31,13 +32,17 @@ public class SettingsMenu : Menu
     //init. options based on UserSettings values
     void InitOptions()
     {
-        backgroundToggles = backgroundImages.GetComponentsInChildren<Toggle>();
-        colourToggles = boardColours.GetComponentsInChildren<Toggle>();
-
         hintsToggle.isOn = userSettings.hintsOn;
         soundToggle.isOn = userSettings.soundOn;
 
-        cpuDifficultyDropdown.value = (int)userSettings.cpuDifficulty;
+        difficultyToggles = difficultySettings.GetComponentsInChildren<Toggle>();
+        backgroundToggles = backgroundImages.GetComponentsInChildren<Toggle>();
+        colourToggles = boardColours.GetComponentsInChildren<Toggle>();
+
+        for (int i = 0; i < difficultyToggles.Length; i++)
+        {
+            difficultyToggles[i].SetIsOnWithoutNotify(i == (int)userSettings.cpuDifficulty);
+        }
 
         for (int i = 0; i < backgroundToggles.Length; i++)
         {
@@ -60,9 +65,9 @@ public class SettingsMenu : Menu
         userSettings.soundOn = soundToggle.isOn;
     }
 
-    public void OnChangeCPUDifficulty()
+    public void OnChangeCPUDifficulty(int value)
     {
-        userSettings.cpuDifficulty = (UserSettings.CPUDifficulty)cpuDifficultyDropdown.value;
+        userSettings.cpuDifficulty = (UserSettings.CPUDifficulty)value;
     }
 
     public void OnChangeBackgroundImage(int value)
