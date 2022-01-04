@@ -24,9 +24,9 @@ public class UserSettings : ScriptableObject
 
     public enum CPUDifficulty
     {
-        Easy,
-        Normal,
-        Hard
+        Beginner,
+        Intermediate,
+        Advanced
     }
 
     public BackgroundImage backgroundImage = 0;
