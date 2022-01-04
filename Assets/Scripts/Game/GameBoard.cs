@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameBoard : MonoBehaviour
 {
     [SerializeField] UserSettings userSettings;
+    [SerializeField] ColourObject[] boardColours;
 
     void Awake()
     {
@@ -13,7 +12,7 @@ public class GameBoard : MonoBehaviour
 
     void InitBoardColour()
     {
-        MeshRenderer mesh = GetComponent<MeshRenderer>();
-        mesh.material = mesh.materials[(int)userSettings.boardColour];
+        var mat = GetComponent<MeshRenderer>().material;
+        mat.color = boardColours[(int)userSettings.boardColour].value;
     }
 }
