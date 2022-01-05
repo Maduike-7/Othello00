@@ -513,7 +513,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1758792682}
+      objectReference: {fileID: 1758792683}
     - target: {fileID: 4456343504073848215, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -2769,7 +2769,7 @@ GameObject:
   - component: {fileID: 882137031}
   - component: {fileID: 882137030}
   m_Layer: 5
-  m_Name: Game Options (TMP)
+  m_Name: Game Settings (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2831,7 +2831,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Game Options
+  m_text: Game Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ac631eb6254de1b4da757734950ba43e, type: 2}
   m_sharedMaterial: {fileID: 4358071535114342362, guid: ac631eb6254de1b4da757734950ba43e,
@@ -5275,6 +5275,7 @@ GameObject:
   - component: {fileID: 1758792679}
   - component: {fileID: 1758792678}
   - component: {fileID: 1758792682}
+  - component: {fileID: 1758792683}
   m_Layer: 5
   m_Name: Settings menu (canvas)
   m_TagString: Untagged
@@ -5377,12 +5378,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   userSettings: {fileID: 11400000, guid: d9ae5cd5342bb6f4680e2a02116626f8, type: 2}
-  soundToggle: {fileID: 1909720470}
-  hintsToggle: {fileID: 1360019770}
-  animationsToggle: {fileID: 102629590}
   difficultySettings: {fileID: 1068532308}
   backgroundImages: {fileID: 385764321}
   boardColours: {fileID: 1826086889}
+--- !u!114 &1758792683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758792677}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a88145175570ec94f8ac064951b666d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userSettings: {fileID: 11400000, guid: d9ae5cd5342bb6f4680e2a02116626f8, type: 2}
+  soundToggle: {fileID: 1909720470}
+  hintsToggle: {fileID: 1360019770}
+  animationsToggle: {fileID: 102629590}
 --- !u!1 &1772440926
 GameObject:
   m_ObjectHideFlags: 0
@@ -6279,7 +6293,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1758792682}
+      objectReference: {fileID: 1758792683}
     - target: {fileID: 4456343504073848215, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -7224,7 +7238,7 @@ PrefabInstance:
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1758792682}
+      objectReference: {fileID: 1758792683}
     - target: {fileID: 4456343504073848215, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName

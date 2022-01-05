@@ -1,16 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class SettingsMenu : Menu
 {
     [SerializeField] UserSettings userSettings;
-
-    [Space]
-
-    [SerializeField] Toggle soundToggle;
-    [SerializeField] Toggle hintsToggle;
-    [SerializeField] Toggle animationsToggle;
 
     [Space]
 
@@ -35,10 +28,6 @@ public class SettingsMenu : Menu
     //init. options based on UserSettings values
     void InitOptions()
     {
-        hintsToggle.isOn = userSettings.hintsOn;
-        soundToggle.isOn = userSettings.soundOn;
-        animationsToggle.isOn = userSettings.animationsOn;
-
         difficultyToggles = difficultySettings.GetComponentsInChildren<Toggle>();
         backgroundToggles = backgroundImages.GetComponentsInChildren<Toggle>();
         colourToggles = boardColours.GetComponentsInChildren<Toggle>();
@@ -57,21 +46,6 @@ public class SettingsMenu : Menu
         {
             colourToggles[i].SetIsOnWithoutNotify(i == (int)userSettings.boardColour);
         }
-    }
-
-    public void OnToggleHints()
-    {
-        userSettings.hintsOn = hintsToggle.isOn;
-    }
-
-    public void OnToggleSound()
-    {
-        userSettings.soundOn = soundToggle.isOn;
-    }
-
-    public void OnToggleAnimations()
-    {
-        userSettings.animationsOn = animationsToggle.isOn;
     }
 
     public void OnChangeCPUDifficulty(int value)
