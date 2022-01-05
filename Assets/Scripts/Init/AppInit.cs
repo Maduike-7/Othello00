@@ -6,6 +6,7 @@ public class AppInit : MonoBehaviour
 
     void Awake()
     {
+        Screen.fullScreen = false;
         userSettings.Load();
     }
 }
