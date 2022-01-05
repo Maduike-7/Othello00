@@ -37,6 +37,7 @@ public class SettingsMenu : Menu
     {
         hintsToggle.isOn = userSettings.hintsOn;
         soundToggle.isOn = userSettings.soundOn;
+        animationsToggle.isOn = userSettings.animationsOn;
 
         difficultyToggles = difficultySettings.GetComponentsInChildren<Toggle>();
         backgroundToggles = backgroundImages.GetComponentsInChildren<Toggle>();

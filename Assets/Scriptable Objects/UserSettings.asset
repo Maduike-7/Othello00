@@ -17,3 +17,4 @@ MonoBehaviour:
   cpuDifficulty: 0
   soundOn: 1
   hintsOn: 1
+  animationsOn: 1
