@@ -8,8 +8,11 @@ public class SettingsMenu : Menu
 
     [Space]
 
-    [SerializeField] Toggle hintsToggle;
     [SerializeField] Toggle soundToggle;
+    [SerializeField] Toggle hintsToggle;
+    [SerializeField] Toggle animationsToggle;
+
+    [Space]
 
     [SerializeField] ToggleGroup difficultySettings;
     Toggle[] difficultyToggles;
@@ -63,6 +66,11 @@ public class SettingsMenu : Menu
     public void OnToggleSound()
     {
         userSettings.soundOn = soundToggle.isOn;
+    }
+
+    public void OnToggleAnimations()
+    {
+        userSettings.animationsOn = animationsToggle.isOn;
     }
 
     public void OnChangeCPUDifficulty(int value)

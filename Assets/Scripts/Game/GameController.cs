@@ -52,8 +52,10 @@ public class GameController : MonoBehaviour
     List<(int, int)> corners = new List<(int, int)>(4);
     List<(int, int)> edges = new List<(int, int)>((BoardSize - 1) * 4);
 
-    const float FlipAnimationDuration = 0.5f;
     const float FlipAnimationDelay = 0.1f;
+    const float FlipAnimationDuration = 0.5f;
+
+    float flipAnimationDuration => userSettings.animationsOn ? FlipAnimationDuration : 0f;
 
     int BlackDiscLayer => LayerMask.NameToLayer("Black Disc");
     int WhiteDiscLayer => LayerMask.NameToLayer("White Disc");
@@ -219,7 +221,7 @@ public class GameController : MonoBehaviour
         inputEnabled = false;
 
         //wait for seconds based on highest flipCount in validDirections
-        yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
+        yield return WaitForSeconds(flipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
         PassTurn(0);
@@ -236,10 +238,10 @@ public class GameController : MonoBehaviour
             //set flip delay based on flipLength such that it looks like discs are flipping one after another, instead of all at once
             float flipDelay = i * FlipAnimationDelay;
 
-            gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis, FlipAnimationDuration, flipDelay);
+            gameBoard[coordinate.row + (direction.y * i), coordinate.col + (direction.x * i)].GetComponent<Disc>().FlipUponAxis(flipAxis, flipAnimationDuration, flipDelay);
 
             //play disc flip sfx
-            DiscFlipAction?.Invoke(flipDelay + FlipAnimationDuration);
+            DiscFlipAction?.Invoke(flipDelay + flipAnimationDuration);
 
             //increment/decrement disc counts accordingly (player always plays as black)
             if (playerTurn)

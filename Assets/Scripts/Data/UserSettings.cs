@@ -36,4 +36,5 @@ public class UserSettings : ScriptableObject
 
     public bool soundOn = true;
     public bool hintsOn = true;
+    public bool animationsOn = true;
 }

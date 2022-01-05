@@ -15,12 +15,12 @@ public class Disc : MonoBehaviour
         //toggle layer (white <-> black)
         gameObject.layer = IsBlack ? WhiteDiscLayer : BlackDiscLayer;
 
-        //if this disc is visible in scene, start rotate animation
-        if (gameObject.activeSelf && flipDuration > 0f)
-        {
-            Quaternion startRotation = Quaternion.AngleAxis(IsBlack ? 180 : 0, flipAxis);
-            Quaternion endRotation = Quaternion.AngleAxis(IsBlack ? 0 : 180, flipAxis);
+        Quaternion startRotation = Quaternion.AngleAxis(IsBlack ? 180 : 0, flipAxis);
+        Quaternion endRotation = Quaternion.AngleAxis(IsBlack ? 0 : 180, flipAxis);
 
+        //if this disc is visible in scene, start rotate animation
+        if (gameObject.activeSelf)
+        {
             StartCoroutine(Rotate(startRotation, endRotation, flipDuration, flipDelay));
         }
         //otherwise just set its rotation
@@ -37,6 +37,12 @@ public class Disc : MonoBehaviour
         float currentLerpTime = 0f;
 
         yield return WaitForSeconds(flipDelay);
+
+        if (flipDuration <= 0)
+        {
+            transform.localRotation = endRot;
+            yield break;
+        }
 
         while (currentLerpTime <= flipDuration)
         {
