@@ -18,7 +18,7 @@ public abstract class Menu : MonoBehaviour
             m.SetEnabled(true);
     }
 
-    public void Close()
+    public virtual void Close()
     {
         thisMenu.enabled = false;
         SetEnabled(false);
@@ -41,7 +41,7 @@ public abstract class Menu : MonoBehaviour
     }
 
 #if UNITY_ANDROID
-    void Update()
+    protected virtual void Update()
     {
         if (Input.GetButtonUp("Cancel"))
         {
