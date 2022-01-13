@@ -2655,7 +2655,7 @@ Material:
     - _Reflectivity: 10
     - _ScaleRatioA: 0.8333333
     - _ScaleRatioB: 0.6770833
-    - _ScaleRatioC: 0.35654733
+    - _ScaleRatioC: 0.35635966
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -2671,7 +2671,7 @@ Material:
     - _UnderlayDilate: 0
     - _UnderlayOffsetX: 1
     - _UnderlayOffsetY: -1
-    - _UnderlaySoftness: 0.899
+    - _UnderlaySoftness: 0.9
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
     - _WeightBold: 0.75
