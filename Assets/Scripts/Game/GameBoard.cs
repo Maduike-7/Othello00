@@ -3,7 +3,7 @@
 public class GameBoard : MonoBehaviour
 {
     [SerializeField] UserSettings userSettings;
-    [SerializeField] ColourObject[] boardColours;
+    [SerializeField] Texture[] boardColours;
 
     void Awake()
     {
@@ -13,6 +13,6 @@ public class GameBoard : MonoBehaviour
     void InitBoardColour()
     {
         var mat = GetComponent<MeshRenderer>().material;
-        mat.color = boardColours[(int)userSettings.boardColour].value;
+        mat.SetTexture("_MainTex", boardColours[(int)userSettings.boardColour]);
     }
 }
