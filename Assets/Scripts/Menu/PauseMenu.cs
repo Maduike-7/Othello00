@@ -2,9 +2,7 @@
 
 public class PauseMenu : Menu
 {
-    [SerializeField] PauseHandler pauseHandler;
-
-    [Space]
+    PauseHandler pauseHandler;
 
     [SerializeField] GameObject pauseMenuPanel;
     [SerializeField] GameObject settingsMenuPanel;
@@ -12,7 +10,11 @@ public class PauseMenu : Menu
     protected override void Awake()
     {
         base.Awake();
+
+        pauseHandler = FindObjectOfType<PauseHandler>();
         pauseHandler.GamePauseAction += OnGamePaused;
+
+        backgroundTransition = FindObjectOfType<BackgroundTransition>();
     }
 
     void OnGamePaused(bool state)
@@ -36,12 +38,8 @@ public class PauseMenu : Menu
         settingsMenuPanel.SetActive(true);
     }
 
-    void Update()
+    public override void HandleBackButtonInput()
     {
-        if (Input.GetButtonUp("Cancel"))
-        {
-            pauseHandler.SetGamePaused(false);
-            print("close.");
-        }
+        pauseHandler.SetGamePaused(false);
     }
 }

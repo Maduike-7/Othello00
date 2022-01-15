@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class Menu : MonoBehaviour
 {
     protected Canvas thisMenu;
+
+    protected BackgroundTransition backgroundTransition;
+    IEnumerator sceneTransitionCoroutine;
 
     protected virtual void Awake()
     {
@@ -37,6 +41,16 @@ public abstract class Menu : MonoBehaviour
 
     public void LoadScene(int sceneIndex)
     {
+        if (sceneTransitionCoroutine == null)
+        {
+            sceneTransitionCoroutine = LoadSceneAfterDelay(sceneIndex);
+            StartCoroutine(sceneTransitionCoroutine);
+        }
+    }
+
+    IEnumerator LoadSceneAfterDelay(int sceneIndex)
+    {
+        yield return backgroundTransition.Fade(0f, 1f, 1f);
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneIndex);
     }
 

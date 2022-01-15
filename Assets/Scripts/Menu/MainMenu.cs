@@ -4,6 +4,12 @@ public class MainMenu : Menu
 {
     [SerializeField] GameObject menuDisc;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        backgroundTransition = FindObjectOfType<BackgroundTransition>();
+    }
+
     protected override void Update()
     {
         base.Update();
