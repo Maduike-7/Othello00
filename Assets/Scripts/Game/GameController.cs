@@ -204,6 +204,9 @@ public class GameController : MonoBehaviour
 
     IEnumerator MakeMove((int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> validDirections)
     {
+        //disable input until flip animation finishes
+        inputEnabled = false;
+
         //update board display and internal board state
         gameBoard[coordinate.row, coordinate.col].SetActive(true);
         currentGameState.board[coordinate.row, coordinate.col] = playerTurn ? (int)CellType.Black : (int)CellType.White;
@@ -218,65 +221,62 @@ public class GameController : MonoBehaviour
             discCount.white++;
         }
 
-        //play sound
+        //play disc place sfx
         if (userSettings.soundOn)
         {
             DiscPlaceAction?.Invoke();
         }
 
-        //call FlipInDirection() for all directions in validDirections
+        //flip all flippable discs for all directions in validDirections
         for (int i = 0; i < validDirections.Count; i++)
         {
-            FlipInDirection(coordinate, validDirections[i].direction, validDirections[i].flipCount);
+            //FlipInDirection(coordinate, validDirections[i].direction, validDirections[i].flipCount);
+
+            Vector2Int flipDirection = validDirections[i].direction;
+
+            for (int j = 1; j <= validDirections[i].flipCount; j++)
+            {
+                //set flip axis such that it looks like discs are flipping outward from position of placed disc
+                Vector3 directionV3 = new Vector3(flipDirection.x, flipDirection.y);
+                Vector3 flipAxis = Vector3.Cross(directionV3, playerTurn ? Vector3.forward : Vector3.back);
+
+                //set flip delay based on flipLength such that it looks like discs are flipping one after another, instead of all at once
+                float flipDelay = j * FlipAnimationDelay;
+
+                int nextRow = coordinate.row + (flipDirection.y * j);
+                int nextCol = coordinate.col + (flipDirection.x * j);
+
+                //update board display and internal board state
+                gameBoard[nextRow, nextCol].GetComponent<Disc>().FlipUponAxis(flipAxis, FlipAnimationDuration, flipDelay);
+                currentGameState.board[nextRow, nextCol] = playerTurn ? (int)CellType.Black : (int)CellType.White;
+
+                //play disc flip sfx
+                DiscFlipAction?.Invoke(flipDelay + FlipAnimationDuration);
+
+                //increment/decrement disc counts based on whose turn it is
+                if (playerTurn)
+                {
+                    discCount.black++;
+                    discCount.white--;
+                }
+                else
+                {
+                    discCount.black--;
+                    discCount.white++;
+                }
+            }
         }
 
-        //disable input until flip animation finishes
-        inputEnabled = false;
-
-        //wait for seconds based on greatest flipCount in validDirections
+        //wait for seconds based on greatest flipCount in validDirections, before re-enabling input
         yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
+        //debug
         ClearConsole();
         print("current game board:");
         PrintGameState(currentGameState);
+
         PassTurn(0);
-    }
-
-    //flip all flippable discs in specified direction and 
-    void FlipInDirection((int row, int col) coordinate, Vector2Int direction, int flipLength)
-    {
-        for (int i = 1; i <= flipLength; i++)
-        {
-            //set flip axis such that it looks like discs are flipping outward from position of placed disc
-            Vector3 directionV3 = new Vector3(direction.x, direction.y);
-            Vector3 flipAxis = Vector3.Cross(directionV3, playerTurn ? Vector3.forward : Vector3.back);
-
-            //set flip delay based on flipLength such that it looks like discs are flipping one after another, instead of all at once
-            float flipDelay = i * FlipAnimationDelay;
-
-            int nextRow = coordinate.row + (direction.y * i);
-            int nextCol = coordinate.col + (direction.x * i);
-
-            //update
-            gameBoard[nextRow, nextCol].GetComponent<Disc>().FlipUponAxis(flipAxis, FlipAnimationDuration, flipDelay);
-            currentGameState.board[nextRow, nextCol] = playerTurn ? (int)CellType.Black : (int)CellType.White;
-
-            //play disc flip sfx
-            DiscFlipAction?.Invoke(flipDelay + FlipAnimationDuration);
-
-            //increment/decrement disc counts accordingly based on whose turn it is
-            if (playerTurn)
-            {
-                discCount.black++;
-                discCount.white--;
-            }
-            else
-            {
-                discCount.black--;
-                discCount.white++;
-            }
-        }
     }
 
     //handle events that happen between turns
@@ -349,8 +349,10 @@ public class GameController : MonoBehaviour
                         int totalFlipCount = validDirections.Sum(i => i.flipCount);
                         state.validSpaces.Add(((row, col), totalFlipCount));
 
+                        //create copy of current game state to be modified
                         int[,] stateCopy = currentGameState.board.Clone() as int[,];
 
+                        //apply theoretical move to 
                         stateCopy[row, col] = playerTurn ? (int)CellType.Black : (int)CellType.White;
 
                         for (int i = 0; i < validDirections.Count; i++)
