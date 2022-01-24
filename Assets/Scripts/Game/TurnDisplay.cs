@@ -31,8 +31,8 @@ public class TurnDisplay : MonoBehaviour
 
     void OnGameOver()
     {
-        int blackDiscCount = gc.discCount.black;
-        int whiteDiscCount = gc.discCount.white;
+        int blackDiscCount = gc.CurrentGameState.DiscCount.black;
+        int whiteDiscCount = gc.CurrentGameState.DiscCount.white;
 
         string text = blackDiscCount > whiteDiscCount ? "You win!" : blackDiscCount == whiteDiscCount ? "The result is a draw." : "CPU wins.";
         AnimateText(text);
