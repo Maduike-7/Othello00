@@ -154,9 +154,9 @@ public class GameController : MonoBehaviour
 
     List<(Vector2Int, int)> FindFlipDirections((int row, int col) coordinate)
     {
-        List<(Vector2Int direction, int flipCount)> validDirections = new List<(Vector2Int direction, int flipCount)>();
+        List<(Vector2Int direction, int flipCount)> flipDirections = new List<(Vector2Int direction, int flipCount)>();
 
-        //call CheckInDirection for all 8 directions in checkDirections[], and store result as (valid check direction, amount to flip) in validDirections[]
+        //call CheckInDirection for all 8 directions in checkDirections[]
         for (int i = 0; i < checkDirections.Length; i++)
         {
             int nextRow = coordinate.row + checkDirections[i].y;
@@ -168,12 +168,12 @@ public class GameController : MonoBehaviour
 
                 if (isValid)
                 {
-                    validDirections.Add((checkDirections[i], flipCount));
+                    flipDirections.Add((checkDirections[i], flipCount));
                 }
             }
         }
 
-        return validDirections;
+        return flipDirections;
     }
 
     (bool isValid, int flipCount) CheckInDirection((int row, int col) coordinate, Vector2Int direction)
@@ -222,7 +222,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    IEnumerator DisplayMove((int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> validDirections)
+    IEnumerator DisplayMove((int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> flipDirections)
     {
         //disable input until flip animation finishes
         inputEnabled = false;
@@ -236,12 +236,12 @@ public class GameController : MonoBehaviour
             DiscPlaceAction?.Invoke();
         }
 
-        //flip all flippable discs for all directions in validDirections
-        for (int i = 0; i < validDirections.Count; i++)
+        //flip all flippable discs for all directions in flipDirections
+        for (int i = 0; i < flipDirections.Count; i++)
         {
-            Vector2Int flipDirection = validDirections[i].direction;
+            Vector2Int flipDirection = flipDirections[i].direction;
 
-            for (int j = 1; j <= validDirections[i].flipCount; j++)
+            for (int j = 1; j <= flipDirections[i].flipCount; j++)
             {
                 //set flip axis such that it looks like discs are flipping outward from position of placed disc
                 Vector3 directionV3 = new Vector3(flipDirection.x, flipDirection.y);
@@ -261,8 +261,8 @@ public class GameController : MonoBehaviour
             }
         }
 
-        //wait for seconds based on greatest flipCount in validDirections, before re-enabling input
-        yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * validDirections.Max(i => i.flipCount));
+        //wait for seconds based on greatest flipCount in flipDirections, before re-enabling input
+        yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * flipDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
         //debug
