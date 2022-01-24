@@ -201,6 +201,11 @@ public class GameController : MonoBehaviour
 
         return (false, 0);
     }
+     
+    void MakeHypotheticalMove((int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> validDirections)
+    {
+
+    }
 
     IEnumerator MakeMove((int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> validDirections)
     {
@@ -378,6 +383,47 @@ public class GameController : MonoBehaviour
         }
     }
 
+    float Minimax(GameState state, int depth, float alpha, float beta, bool maximizingPlayer)
+    {
+        if (depth == 0 || state.IsGameOver)
+        {
+            return state.Evaluation;
+        }
+
+        if (maximizingPlayer)
+        {
+            float maxEvaluation = Mathf.NegativeInfinity;
+
+            foreach (var child in state.childGameStates)
+            {
+                float evaluation = Minimax(child, depth - 1, alpha, beta, false);
+
+                maxEvaluation = Mathf.Max(maxEvaluation, evaluation);
+                alpha = Mathf.Max(alpha, evaluation);
+
+                if (beta <= alpha) break;
+            }
+
+            return maxEvaluation;
+        }
+        else
+        {
+            float minEvaluation = Mathf.Infinity;
+
+            foreach (var child in state.childGameStates)
+            {
+                float evaluation = Minimax(child, depth - 1, alpha, beta, true);
+
+                minEvaluation = Mathf.Min(minEvaluation, evaluation);
+                beta = Mathf.Min(beta, evaluation);
+
+                if (beta <= alpha) break;
+            }
+
+            return minEvaluation;
+        }
+    }
+
     IEnumerator RunCPU()
     {
         //order validSpaces[] by whether or not item exists in corners[], then by whether or not item exists in edges[], then by item's total number of discs to flip
@@ -522,6 +568,8 @@ public class GameState
 
     public List<((int row, int col) coordinate, int flipCount)> validSpaces = new List<((int, int), int)>();
     public List<GameState> childGameStates = new List<GameState>();
+
+    public bool IsGameOver => validSpaces.Count == 0;
 
     //to-do: impl. properly
     public int Evaluation
