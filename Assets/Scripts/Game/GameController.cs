@@ -43,6 +43,7 @@ public class GameController : MonoBehaviour
         White = -1
     }
 
+    //array of all cardinal and ordinal directions to check for discs to flip
     readonly Vector2Int[] checkDirections = new Vector2Int[8]
     {
         new Vector2Int( 0, 1),
@@ -144,7 +145,7 @@ public class GameController : MonoBehaviour
                 {
                     List<(Vector2Int, int)> flipDirections = FindFlipDirections(selectedCoordinate);
 
-                    ApplyMove(currentPlayerTurn, selectedCoordinate, flipDirections);
+                    ApplyMove(CurrentGameState, currentPlayerTurn, selectedCoordinate, flipDirections);
                     StartCoroutine(DisplayMove(selectedCoordinate, flipDirections));
                     HideHints();
                 }
@@ -156,19 +157,40 @@ public class GameController : MonoBehaviour
     {
         List<(Vector2Int direction, int flipCount)> flipDirections = new List<(Vector2Int direction, int flipCount)>();
 
-        //call CheckInDirection for all 8 directions in checkDirections[]
+        int currentColourValue = currentPlayerTurn ? (int)CellType.Black : (int)CellType.White;
+        int oppColourValue = currentPlayerTurn ? (int)CellType.White : (int)CellType.Black;
+
+        //check for discs to flip for all 8 directions in checkDirections[]
         for (int i = 0; i < checkDirections.Length; i++)
         {
+            //continue incrementing check coordinate by check direction
             int nextRow = coordinate.row + checkDirections[i].y;
             int nextCol = coordinate.col + checkDirections[i].x;
 
+            //make sure next coordinate to check is not out of bounds
             if (nextRow >= 0 && nextRow < BoardSize && nextCol >= 0 && nextCol < BoardSize)
             {
-                (bool isValid, int flipCount) = CheckInDirection(coordinate, checkDirections[i]);
+                int flipCount = 0;
 
-                if (isValid)
+                //while next coordinate has a disc of the opposite colour
+                while (CurrentGameState.board[nextRow, nextCol] == oppColourValue)
                 {
-                    flipDirections.Add((checkDirections[i], flipCount));
+                    flipCount++;
+
+                    //keep incrementing check coordinate by check direction
+                    nextRow += checkDirections[i].y;
+                    nextCol += checkDirections[i].x;
+
+                    //check to see if there is eventually another disc of the same colour
+                    if (nextRow >= 0 && nextRow < BoardSize && nextCol >= 0 && nextCol < BoardSize)
+                    {
+                        //if there is another disc of the same colour ("sandwich" confirmed), add to flipDirections
+                        if (CurrentGameState.board[nextRow, nextCol] == currentColourValue)
+                        {
+                            flipDirections.Add((checkDirections[i], flipCount));
+                        }
+                    }
+                    else break;
                 }
             }
         }
@@ -176,37 +198,9 @@ public class GameController : MonoBehaviour
         return flipDirections;
     }
 
-    (bool isValid, int flipCount) CheckInDirection((int row, int col) coordinate, Vector2Int direction)
+    void ApplyMove(GameState state, bool playerTurn, (int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> flipDirections)
     {
-        int currentColourValue = currentPlayerTurn ? (int)CellType.Black : (int)CellType.White;
-        int oppColourValue = currentPlayerTurn ? (int)CellType.White : (int)CellType.Black;
-        int flipCount = 0;
-
-        int nextRow = coordinate.row + direction.y;
-        int nextCol = coordinate.col + direction.x;
-
-        while (CurrentGameState.board[nextRow, nextCol] == oppColourValue)
-        {
-            nextRow += direction.y;
-            nextCol += direction.x;
-            flipCount++;
-
-            if (nextRow >= 0 && nextRow < BoardSize && nextCol >= 0 && nextCol < BoardSize)
-            {
-                if (CurrentGameState.board[nextRow, nextCol] == currentColourValue)
-                {
-                    return (true, flipCount);
-                }
-            }
-            else break;
-        }
-
-        return (false, 0);
-    }
-
-    void ApplyMove(bool playerTurn, (int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> flipDirections)
-    {
-        CurrentGameState.board[coordinate.row, coordinate.col] = playerTurn ? (int)CellType.Black : (int)CellType.White;
+        state.board[coordinate.row, coordinate.col] = playerTurn ? (int)CellType.Black : (int)CellType.White;
 
         for (int i = 0; i < flipDirections.Count; i++)
         {
@@ -217,7 +211,7 @@ public class GameController : MonoBehaviour
                 int nextRow = coordinate.row + (flipDirection.y * j);
                 int nextCol = coordinate.col + (flipDirection.x * j);
 
-                CurrentGameState.board[nextRow, nextCol] = playerTurn ? (int)CellType.Black : (int)CellType.White;
+                state.board[nextRow, nextCol] = playerTurn ? (int)CellType.Black : (int)CellType.White;
             }
         }
     }
@@ -293,7 +287,7 @@ public class GameController : MonoBehaviour
             //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
             CurrentGameState.validSpaces.Clear();
 
-            FindChildGameStates(CurrentGameState);
+            FindChildGameStates(CurrentGameState, currentPlayerTurn);
 
             //if at least 1 valid move exists...
             if (CurrentGameState.validSpaces.Count > 0)
@@ -327,17 +321,19 @@ public class GameController : MonoBehaviour
         ScoreUpdateAction?.Invoke(black, white);
     }
 
-    void FindChildGameStates(GameState state)
+    void FindChildGameStates(GameState state, bool playerTurn)
     {
-        CurrentGameState.childGameStates.Clear();
+        state.childGameStates.Clear();
 
         for (int row = 0; row < BoardSize; row++)
         {
             for (int col = 0; col < BoardSize; col++)
             {
-                if (CurrentGameState.board[row, col] == 0)
+                if (state.board[row, col] == 0)
                 {
                     List<(Vector2Int direction, int flipCount)> flipDirections = FindFlipDirections((row, col));
+
+
 
                     //if placing a disc at [row, col] makes for valid move, add to validSpaces[], with total number of discs flipped
                     if (flipDirections.Count > 0)
@@ -346,10 +342,10 @@ public class GameController : MonoBehaviour
                         state.validSpaces.Add(((row, col), totalFlipCount));
 
                         //create copy of current game state to be modified
-                        int[,] stateCopy = CurrentGameState.board.Clone() as int[,];
+                        int[,] stateCopy = state.board.Clone() as int[,];
 
                         //apply theoretical move to 
-                        stateCopy[row, col] = currentPlayerTurn ? (int)CellType.Black : (int)CellType.White;
+                        stateCopy[row, col] = playerTurn ? (int)CellType.Black : (int)CellType.White;
 
                         for (int i = 0; i < flipDirections.Count; i++)
                         {
@@ -432,7 +428,7 @@ public class GameController : MonoBehaviour
 
         List<(Vector2Int, int)> flipDirections = FindFlipDirections(selectedCoordinate);
 
-        ApplyMove(currentPlayerTurn, selectedCoordinate, flipDirections);
+        ApplyMove(CurrentGameState, currentPlayerTurn, selectedCoordinate, flipDirections);
         yield return DisplayMove(selectedCoordinate, flipDirections);
     }
 
