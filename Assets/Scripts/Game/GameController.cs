@@ -100,18 +100,16 @@ public class GameController : MonoBehaviour
                 //make move if selected coordinate exists in list of valid moves
                 if (CurrentGameState.validMoves.Any(item => (item.coordinate.row, item.coordinate.col) == selectedCoordinate))
                 {
-                    List<(Vector2Int direction, int flipCount)> flipDirections = CurrentGameState.GetFlipDirections(CurrentGameState.IsPlayerTurn, selectedCoordinate);
-
-                    CurrentGameState.ApplyMove(CurrentGameState.IsPlayerTurn, selectedCoordinate, flipDirections);
-                    StartCoroutine(DisplayMove(selectedCoordinate, flipDirections));
                     HideHints();
+                    StartCoroutine(DisplayMove(selectedCoordinate));
+                    CurrentGameState.ApplyMove(selectedCoordinate);
                 }
             }
         }
     }
 
     //show the move happening on the game board
-    IEnumerator DisplayMove((int row, int col) coordinate, List<(Vector2Int direction, int flipCount)> flipDirections)
+    IEnumerator DisplayMove((int row, int col) coordinate)
     {
         //disable input until flip animation finishes
         inputEnabled = false;
@@ -122,6 +120,8 @@ public class GameController : MonoBehaviour
         {
             DiscPlaceAction?.Invoke();
         }
+
+        List<(Vector2Int direction, int flipCount)> flipDirections = CurrentGameState.GetFlipDirections(CurrentGameState.IsPlayerTurn, coordinate);
 
         //flip all flippable discs for all directions in flipDirections
         for (int i = 0; i < flipDirections.Count; i++)
@@ -174,9 +174,7 @@ public class GameController : MonoBehaviour
             //pass the turn over
             CurrentGameState.PassTurn();
 
-            //check all coordinates of inactive discs to see if a move can be made there, given whose turn it is
-            CurrentGameState.validMoves.Clear();
-            CurrentGameState.GetValidMoves(CurrentGameState.IsPlayerTurn);
+            CurrentGameState.GetValidMoves(CurrentGameState, CurrentGameState.IsPlayerTurn);
 
             if (CurrentGameState.validMoves.Count > 0)
             {
