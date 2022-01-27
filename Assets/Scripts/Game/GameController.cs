@@ -371,7 +371,6 @@ public class GameState
         board[4, 3] = -1;
         board[4, 4] = 1;
 
-        print("new game state created.");
         GetValidMoves(IsPlayerTurn);
     }
 
@@ -494,33 +493,34 @@ public class GameState
         }
     }
 
-    public void GetCPUMove()
+    public ((int, int), int) GetCPUMove()
     {
-        float minEval = Mathf.Infinity;
-        (int row, int col) bestMove;
+        int minEvaluation = int.MaxValue;
+        (int row, int col) bestMove = validMoves[0].coordinate;
 
         foreach (var move in validMoves)
         {
-            var flipDirections = GetFlipDirections(!IsPlayerTurn, move.coordinate);
-            ApplyMove(!IsPlayerTurn, move.coordinate, flipDirections);
+            minEvaluation = Mathf.Min(minEvaluation, move.evaluation);
         }
+
+        return ((bestMove), minEvaluation);
     }
 
-    /*
-    public float Minimax(GameState state, int depth, float alpha, float beta, bool maximizingPlayer)
+    
+    public int Minimax((int row, int col) coordinate, int depth, float alpha, float beta, bool maximizingPlayer)
     {
         if (depth == 0 || IsGameOver)
         {
-            return state.Evaluation;
+            return Evaluation;
         }
 
         if (maximizingPlayer)
         {
-            float maxEvaluation = Mathf.NegativeInfinity;
+            int maxEvaluation = int.MinValue;
 
-            foreach (var move in state.validMoves)
+            foreach (var move in validMoves)
             {
-                float evaluation = Minimax(child, depth - 1, alpha, beta, false);
+                int evaluation = Minimax(move.coordinate, depth - 1, alpha, beta, false);
 
                 maxEvaluation = Mathf.Max(maxEvaluation, evaluation);
                 alpha = Mathf.Max(alpha, evaluation);
@@ -532,11 +532,11 @@ public class GameState
         }
         else
         {
-            float minEvaluation = Mathf.Infinity;
+            int minEvaluation = int.MaxValue;
 
-            foreach (var move in state.validMoves)
+            foreach (var move in validMoves)
             {
-                float evaluation = Minimax(child, depth - 1, alpha, beta, true);
+                int evaluation = Minimax(move.coordinate, depth - 1, alpha, beta, true);
 
                 minEvaluation = Mathf.Min(minEvaluation, evaluation);
                 beta = Mathf.Min(beta, evaluation);
@@ -547,7 +547,7 @@ public class GameState
             return minEvaluation;
         }
     }
-    */
+    
 
     public void PassTurn()
     {
