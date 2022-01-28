@@ -187,8 +187,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    int cpuDifficulty = (int)userSettings.cpuDifficulty + 1;
-                    CurrentGameState.GetCPUMove(cpuDifficulty);
+                    RunCPU();
                 }
 
                 TurnPassAction?.Invoke(CurrentGameState.IsPlayerTurn, turnsPassed);
@@ -210,6 +209,13 @@ public class GameController : MonoBehaviour
 
         (int black, int white) = CurrentGameState.DiscCount;
         ScoreUpdateAction?.Invoke(black, white);
+    }
+
+    void RunCPU()
+    {
+        int cpuDifficulty = (int)userSettings.cpuDifficulty + 1;
+
+        CurrentGameState.GetCPUMove(cpuDifficulty);
     }
 
     void ShowHints()

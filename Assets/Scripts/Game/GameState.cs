@@ -214,13 +214,13 @@ public class GameState
         int minEvaluation = int.MaxValue;
         (int row, int col) bestMove = validMoves[0].coordinate;
 
-        int evaluation = Minimax(this, 2, Mathf.NegativeInfinity, Mathf.Infinity, false);
+        int evaluation = Minimax(this, 3, int.MinValue, int.MaxValue, false);
         print($"static evaluation is {evaluation}");
 
         return (bestMove, minEvaluation);
     }
 
-    public int Minimax(GameState state, int depth, float alpha, float beta, bool maximizingPlayer)
+    public int Minimax(GameState state, int depth, int alpha, int beta, bool maximizingPlayer)
     {
         if (depth == 0 || IsGameOver)
         {
@@ -254,6 +254,7 @@ public class GameState
         else
         {
             int minEvaluation = int.MaxValue;
+
             foreach (var move in state.validMoves)
             {
                 var flipDirections = GetFlipDirections(state, IsPlayerTurn, move.coordinate);
