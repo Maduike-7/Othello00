@@ -13,6 +13,9 @@ public class GameController : MonoBehaviour
     [Space]
 
     [SerializeField] AudioController audioController;
+
+    [Space]
+
     [SerializeField] Transform discParent;
     [SerializeField] GameObject hintDiscParent;
     Camera mainCam;
@@ -46,8 +49,6 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
-        CurrentGameState = new GameState();
-
         mainCam = Camera.main;
 
         GameOverAction += OnGameOver;
@@ -56,13 +57,15 @@ public class GameController : MonoBehaviour
         InitGame();
     }
 
+    //get game board elements
     void InitGame()
     {
+        CurrentGameState = new GameState();
+
         for (int row = 0; row < BoardSize; row++)
         {
             for (int col = 0; col < BoardSize; col++)
             {
-                //get game board elements
                 gameBoard[row, col] = discParent.GetChild(row * BoardSize + col).gameObject;
                 hintDiscs[row, col] = hintDiscParent.transform.GetChild(row * BoardSize + col).gameObject;
             }
@@ -121,7 +124,7 @@ public class GameController : MonoBehaviour
             DiscPlaceAction?.Invoke();
         }
 
-        List<(Vector2Int direction, int flipCount)> flipDirections = CurrentGameState.GetFlipDirections(CurrentGameState.IsPlayerTurn, coordinate);
+        List<(Vector2Int direction, int flipCount)> flipDirections = CurrentGameState.GetFlipDirections(CurrentGameState, CurrentGameState.IsPlayerTurn, coordinate);
 
         //flip all flippable discs for all directions in flipDirections
         for (int i = 0; i < flipDirections.Count; i++)
@@ -151,8 +154,8 @@ public class GameController : MonoBehaviour
 
         //debug
         ClearConsole();
-        print("current game board:");
-        PrintGameState(CurrentGameState);
+        //print("current game board:");
+        //PrintGameState(CurrentGameState);
 
         PassTurn(0);
     }

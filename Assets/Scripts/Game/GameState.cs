@@ -86,7 +86,7 @@ public class GameState
         this.board = board;
     }
 
-    public List<(Vector2Int, int)> GetFlipDirections(bool playerTurn, (int row, int col) coordinate)
+    public List<(Vector2Int, int)> GetFlipDirections(GameState state, bool playerTurn, (int row, int col) coordinate)
     {
         List<(Vector2Int direction, int flipCount)> flipDirections = new List<(Vector2Int, int)>();
 
@@ -106,7 +106,7 @@ public class GameState
                 int flipCount = 0;
 
                 //while next coordinate has a disc of the opposite colour
-                while (board[nextRow, nextCol] == oppColourValue)
+                while (state.board[nextRow, nextCol] == oppColourValue)
                 {
                     flipCount++;
 
@@ -118,7 +118,7 @@ public class GameState
                     if (nextRow >= 0 && nextRow < BoardSize && nextCol >= 0 && nextCol < BoardSize)
                     {
                         //if there is another disc of the same colour ("sandwich" confirmed), add to flipDirections
-                        if (board[nextRow, nextCol] == currentColourValue)
+                        if (state.board[nextRow, nextCol] == currentColourValue)
                         {
                             flipDirections.Add((checkDirections[i], flipCount));
                         }
@@ -137,7 +137,7 @@ public class GameState
 
         board[coordinate.row, coordinate.col] = IsPlayerTurn ? (int)CellType.Black : (int)CellType.White;
 
-        List<(Vector2Int direction, int flipCount)> flipDirections = GetFlipDirections(IsPlayerTurn, coordinate);
+        List<(Vector2Int direction, int flipCount)> flipDirections = GetFlipDirections(this, IsPlayerTurn, coordinate);
 
         for (int i = 0; i < flipDirections.Count; i++)
         {
@@ -188,13 +188,13 @@ public class GameState
                 //for all empty cells, check if placing a disc that cell makes for a valid move
                 if (state.board[row, col] == 0)
                 {
-                    List<(Vector2Int direction, int flipCount)> flipDirections = GetFlipDirections(playerTurn, (row, col));
+                    List<(Vector2Int direction, int flipCount)> flipDirections = GetFlipDirections(state, playerTurn, (row, col));
 
                     if (flipDirections.Count > 0)
                     {
                         var boardCopy = TryMove(state, playerTurn, (row, col), flipDirections);
 
-                        validMoves.Add(((row, col), state.Evaluation));
+                        state.validMoves.Add(((row, col), state.Evaluation));
 
                         print("new future game state found.");
                         PrintGameState(boardCopy);
@@ -214,10 +214,8 @@ public class GameState
         int minEvaluation = int.MaxValue;
         (int row, int col) bestMove = validMoves[0].coordinate;
 
-        foreach (var (coordinate, evaluation) in validMoves)
-        {
-            int score = Minimax(this, difficulty, Mathf.NegativeInfinity, Mathf.Infinity, false);
-        }
+        int evaluation = Minimax(this, 2, Mathf.NegativeInfinity, Mathf.Infinity, false);
+        print($"static evaluation is {evaluation}");
 
         return (bestMove, minEvaluation);
     }
@@ -240,7 +238,7 @@ public class GameState
 
             foreach (var move in state.validMoves)
             {
-                var flipDirections = GetFlipDirections(!IsPlayerTurn, move.coordinate);
+                var flipDirections = GetFlipDirections(state, !IsPlayerTurn, move.coordinate);
                 var newState = TryMove(state, !IsPlayerTurn, move.coordinate, flipDirections);
 
                 int evaluation = Minimax(newState, depth - 1, alpha, beta, false);
@@ -256,11 +254,10 @@ public class GameState
         else
         {
             int minEvaluation = int.MaxValue;
-
-            foreach (var move in validMoves)
+            foreach (var move in state.validMoves)
             {
-                var flipDirections = GetFlipDirections(IsPlayerTurn, move.coordinate);
-                var newState = TryMove(state, !IsPlayerTurn, move.coordinate, flipDirections);
+                var flipDirections = GetFlipDirections(state, IsPlayerTurn, move.coordinate);
+                var newState = TryMove(state, IsPlayerTurn, move.coordinate, flipDirections);
 
                 int evaluation = Minimax(newState, depth - 1, alpha, beta, true);
 
@@ -284,7 +281,7 @@ public class GameState
     #region Console Logs
     void PrintGameState(GameState state)
     {
-        print("_________________");
+        print("__________________");
         for (int i = state.board.GetLength(0) - 1; i >= 0; i--)
         {
             string output = "";
