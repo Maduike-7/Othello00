@@ -301,7 +301,9 @@ public class GameController : MonoBehaviour
 
     void ClearConsole()
     {
+#if UNITY_EDITOR
         System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.SceneView)).GetType("UnityEditor.LogEntries").GetMethod("Clear").Invoke(new object(), null);
+#endif
     }
     #endregion
 }
