@@ -227,8 +227,6 @@ public class GameState
 
             if (evaluation <= minEvaluation)
             {
-                minEvaluation = evaluation;
-
                 if (evaluation < minEvaluation)
                 {
                     possibleBestMoves.Clear();
@@ -236,12 +234,14 @@ public class GameState
 
                 bestMove = move.coordinate;
                 possibleBestMoves.Add(bestMove);
+
+                minEvaluation = evaluation;
             }
         }
 
         if (possibleBestMoves.Count == 1)
         {
-            print($"{possibleBestMoves[0] == bestMove}");
+            print($"best possible move is {bestMove}.");
             return bestMove;
         }
         else
