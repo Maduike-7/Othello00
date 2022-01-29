@@ -187,7 +187,7 @@ public class GameController : MonoBehaviour
                 }
                 else
                 {
-                    RunCPU();
+                    StartCoroutine(RunCPU());
                 }
 
                 TurnPassAction?.Invoke(CurrentGameState.IsPlayerTurn, turnsPassed);
@@ -211,11 +211,15 @@ public class GameController : MonoBehaviour
         ScoreUpdateAction?.Invoke(black, white);
     }
 
-    void RunCPU()
+    IEnumerator RunCPU()
     {
-        int cpuDifficulty = (int)userSettings.cpuDifficulty + 1;
+        (int, int) selectedCoordinate = CurrentGameState.GetCPUMove((int)userSettings.cpuDifficulty);
 
-        CurrentGameState.GetCPUMove(cpuDifficulty);
+        float delay = 0.5f + (CurrentGameState.validMoves.Count / 8f);
+        yield return WaitForSeconds(delay);
+
+        StartCoroutine(DisplayMove(selectedCoordinate));
+        CurrentGameState.ApplyMove(selectedCoordinate);
     }
 
     void ShowHints()

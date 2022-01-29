@@ -28,6 +28,7 @@ public class GameState
     public List<((int row, int col) coordinate, int evaluation)> validMoves = new List<((int, int), int)>(BoardSize);
 
     public bool IsPlayerTurn { get; private set; } = true;
+    public void PassTurn() => IsPlayerTurn = !IsPlayerTurn;
 
     public (int black, int white) DiscCount
     {
@@ -192,32 +193,63 @@ public class GameState
 
                     if (flipDirections.Count > 0)
                     {
+                        //debug
                         var boardCopy = TryMove(state, playerTurn, (row, col), flipDirections);
-
-                        state.validMoves.Add(((row, col), state.Evaluation));
-
                         print("new future game state found.");
                         PrintGameState(boardCopy);
+
+                        state.validMoves.Add(((row, col), state.Evaluation));
                     }
                 }
             }
         }
     }
 
-    public void GetCPUMove(int difficulty)
+    public (int, int) GetCPUMove(int difficulty)
     {
-        var bestMove = FindBestMove(difficulty);
+        return FindBestMove(difficulty);
     }
 
-    ((int, int), int) FindBestMove(int difficulty)
+    (int, int) FindBestMove(int difficulty)
     {
-        int minEvaluation = int.MaxValue;
         (int row, int col) bestMove = validMoves[0].coordinate;
+        List<(int row, int col)> possibleBestMoves = new List<(int row, int col)>(validMoves.Count);
 
-        int evaluation = Minimax(this, 3, int.MinValue, int.MaxValue, false);
-        print($"static evaluation is {evaluation}");
+        int minEvaluation = int.MaxValue;
 
-        return (bestMove, minEvaluation);
+        foreach (var move in validMoves)
+        {
+            var flipDirections = GetFlipDirections(this, false, move.coordinate);
+            var newState = TryMove(this, false, move.coordinate, flipDirections);
+
+            int evaluation = Minimax(newState, difficulty, int.MinValue, int.MaxValue, false);
+            print($"static evaluation is {evaluation}");
+
+            if (evaluation <= minEvaluation)
+            {
+                minEvaluation = evaluation;
+
+                if (evaluation < minEvaluation)
+                {
+                    possibleBestMoves.Clear();
+                }
+
+                bestMove = move.coordinate;
+                possibleBestMoves.Add(bestMove);
+            }
+        }
+
+        if (possibleBestMoves.Count == 1)
+        {
+            print($"{possibleBestMoves[0] == bestMove}");
+            return bestMove;
+        }
+        else
+        {
+            int rand = Random.Range(0, possibleBestMoves.Count);
+            print($"randomly selected {possibleBestMoves[rand]} out of {possibleBestMoves.Count} possible best moves.");
+            return possibleBestMoves[rand];
+        }
     }
 
     public int Minimax(GameState state, int depth, int alpha, int beta, bool maximizingPlayer)
@@ -229,7 +261,7 @@ public class GameState
 
         if (state.validMoves.Count == 0)
         {
-            GetValidMoves(state, maximizingPlayer);
+            GetValidMoves(state, !maximizingPlayer);
         }
 
         if (maximizingPlayer)
@@ -238,8 +270,8 @@ public class GameState
 
             foreach (var move in state.validMoves)
             {
-                var flipDirections = GetFlipDirections(state, !IsPlayerTurn, move.coordinate);
-                var newState = TryMove(state, !IsPlayerTurn, move.coordinate, flipDirections);
+                var flipDirections = GetFlipDirections(state, false, move.coordinate);
+                var newState = TryMove(state, false, move.coordinate, flipDirections);
 
                 int evaluation = Minimax(newState, depth - 1, alpha, beta, false);
 
@@ -257,8 +289,8 @@ public class GameState
 
             foreach (var move in state.validMoves)
             {
-                var flipDirections = GetFlipDirections(state, IsPlayerTurn, move.coordinate);
-                var newState = TryMove(state, IsPlayerTurn, move.coordinate, flipDirections);
+                var flipDirections = GetFlipDirections(state, true, move.coordinate);
+                var newState = TryMove(state, true, move.coordinate, flipDirections);
 
                 int evaluation = Minimax(newState, depth - 1, alpha, beta, true);
 
@@ -270,12 +302,6 @@ public class GameState
 
             return minEvaluation;
         }
-    }
-
-
-    public void PassTurn()
-    {
-        IsPlayerTurn = !IsPlayerTurn;
     }
 
     //debug
