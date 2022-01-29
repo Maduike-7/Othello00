@@ -259,46 +259,7 @@ public class GameController : MonoBehaviour
         enabled = false;
     }
 
-    //debug
-    #region Console Logs
-    void PrintGameState(GameState gameState)
-    {
-        print("_________________");
-        for (int i = gameState.board.GetLength(0) - 1; i >= 0; i--)
-        {
-            string output = "";
-
-            for (int j = 0; j < gameState.board.GetLength(1); j++)
-            {
-                if (gameState.board[i, j] == 0)
-                {
-                    output += "_| ";
-                }
-                else if (gameState.board[i, j] == 1)
-                {
-                    output += "●| ";
-                }
-                else if (gameState.board[i, j] == -1)
-                {
-                    output += "○| ";
-                }
-
-                //does same as above but only supported in v2020.2+ smh
-                /*
-                output += (CellType)gameState.board[i, j] switch
-                { 
-                    CellType.Empty => "□, ",
-                    CellType.Black => "●, ",
-                    CellType.White => "○, ",
-                    _ => "",
-                };
-                */
-            }
-
-            print(output);
-        }
-    }
-
+    #region Debug
     void ClearConsole()
     {
 #if UNITY_EDITOR
