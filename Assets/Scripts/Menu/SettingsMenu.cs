@@ -57,7 +57,7 @@ public class SettingsMenu : Menu
     {
         if (backgroundToggles[value].isOn)
         {
-            userSettings.backgroundImage = (UserSettings.BackgroundImage)value;
+            userSettings.backgroundImage = value;
             BackgroundChangeAction?.Invoke();
         }
     }
@@ -66,7 +66,7 @@ public class SettingsMenu : Menu
     {
         if (colourToggles[value].isOn)
         {
-            userSettings.boardColour = (UserSettings.BoardColour)value;
+            userSettings.boardColour = value;
         }
     }
 
