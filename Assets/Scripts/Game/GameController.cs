@@ -152,11 +152,6 @@ public class GameController : MonoBehaviour
         yield return WaitForSeconds(FlipAnimationDuration + FlipAnimationDelay * flipDirections.Max(i => i.flipCount));
         inputEnabled = true;
 
-        //debug
-        ClearConsole();
-        //print("current game board:");
-        //PrintGameState(CurrentGameState);
-
         PassTurn(0);
     }
 
@@ -177,6 +172,7 @@ public class GameController : MonoBehaviour
             //pass the turn over
             CurrentGameState.PassTurn();
 
+            if (!CurrentGameState.IsPlayerTurn) ClearConsole();
             CurrentGameState.GetValidMoves(CurrentGameState, CurrentGameState.IsPlayerTurn);
 
             if (CurrentGameState.validMoves.Count > 0)
@@ -213,9 +209,11 @@ public class GameController : MonoBehaviour
 
     IEnumerator RunCPU()
     {
+        yield return WaitForSeconds(0.5f);
+
         (int, int) selectedCoordinate = CurrentGameState.GetCPUMove((int)userSettings.cpuDifficulty);
 
-        float delay = 0.5f + (CurrentGameState.validMoves.Count / 8f);
+        float delay = CurrentGameState.validMoves.Count / 8f;
         yield return WaitForSeconds(delay);
 
         StartCoroutine(DisplayMove(selectedCoordinate));

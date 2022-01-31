@@ -23,7 +23,7 @@ public class GameState
     };
 
     public const int BoardSize = 8;
-    public readonly int[,] board = new int[BoardSize, BoardSize];
+    readonly int[,] board = new int[BoardSize, BoardSize];
 
     public List<((int row, int col) coordinate, int evaluation)> validMoves = new List<((int, int), int)>(BoardSize);
 
@@ -82,7 +82,7 @@ public class GameState
         GetValidMoves(this, IsPlayerTurn);
     }
 
-    public GameState(int[,] board)
+    GameState(int[,] board)
     {
         this.board = board;
     }
@@ -193,12 +193,16 @@ public class GameState
 
                     if (flipDirections.Count > 0)
                     {
-                        //debug
                         var boardCopy = TryMove(state, playerTurn, (row, col), flipDirections);
-                        print("new future game state found.");
-                        PrintGameState(boardCopy);
+                        state.validMoves.Add(((row, col), boardCopy.Evaluation));
 
-                        state.validMoves.Add(((row, col), state.Evaluation));
+                        //debug
+                        if (!playerTurn)
+                        {
+                            print("new future game state found.");
+                            PrintGameState(boardCopy);
+                        }
+
                     }
                 }
             }
@@ -207,7 +211,13 @@ public class GameState
 
     public (int, int) GetCPUMove(int difficulty)
     {
-        return FindBestMove(difficulty);
+        if (validMoves.Count == 1)
+            return validMoves[0].coordinate;
+
+        if (difficulty == (int)UserSettings.CPUDifficulty.Beginner)
+            return validMoves[Random.Range(0, validMoves.Count)].coordinate;
+        else
+            return FindBestMove(difficulty);
     }
 
     (int, int) FindBestMove(int difficulty)
@@ -222,8 +232,8 @@ public class GameState
             var flipDirections = GetFlipDirections(this, false, move.coordinate);
             var newState = TryMove(this, false, move.coordinate, flipDirections);
 
-            int evaluation = Minimax(newState, difficulty, int.MinValue, int.MaxValue, false);
-            print($"static evaluation is {evaluation}");
+            int evaluation = Minimax(newState, difficulty - 1, int.MinValue, int.MaxValue, false);
+            print($"static evaluation is {evaluation} if move is made at {move.coordinate}");
 
             if (evaluation <= minEvaluation)
             {
@@ -252,7 +262,7 @@ public class GameState
         }
     }
 
-    public int Minimax(GameState state, int depth, int alpha, int beta, bool maximizingPlayer)
+    int Minimax(GameState state, int depth, int alpha, int beta, bool maximizingPlayer)
     {
         if (depth == 0 || IsGameOver)
         {
