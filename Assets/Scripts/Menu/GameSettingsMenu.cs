@@ -10,6 +10,7 @@ public class GameSettingsMenu : Menu
     [SerializeField] Toggle soundToggle;
     [SerializeField] Toggle hintsToggle;
     [SerializeField] Toggle animationsToggle;
+    [SerializeField] Toggle clockToggle;
 
     protected override void Awake()
     {
@@ -21,6 +22,7 @@ public class GameSettingsMenu : Menu
         hintsToggle.isOn = userSettings.hintsOn;
         soundToggle.isOn = userSettings.soundOn;
         animationsToggle.isOn = userSettings.animationsOn;
+        clockToggle.isOn = userSettings.clockOn;
     }
 
     public void OnToggleHints()
@@ -36,6 +38,11 @@ public class GameSettingsMenu : Menu
     public void OnToggleAnimations()
     {
         userSettings.animationsOn = animationsToggle.isOn;
+    }
+
+    public void OnToggleClock()
+    {
+        userSettings.clockOn = clockToggle.isOn;
     }
 
     public override void HandleBackButtonInput()
