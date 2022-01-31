@@ -2087,18 +2087,6 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
-        type: 3}
-    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
-        type: 3}
     - target: {fileID: 4456343503280826139, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: m_text
@@ -2161,6 +2149,18 @@ PrefabInstance:
       propertyPath: m_fontStyle
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
+        type: 3}
+    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb6d73d8bed5b394e8eb0c776eed2f3c, type: 3}
 --- !u!224 &481159690 stripped
@@ -5629,18 +5629,6 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
-        type: 3}
-    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
-        type: 3}
     - target: {fileID: 4456343503280826139, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: m_text
@@ -5703,6 +5691,18 @@ PrefabInstance:
       propertyPath: m_fontStyle
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
+        type: 3}
+    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb6d73d8bed5b394e8eb0c776eed2f3c, type: 3}
 --- !u!224 &1122485160 stripped
@@ -6040,18 +6040,6 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
-        type: 3}
-    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
-        type: 3}
     - target: {fileID: 4456343503280826139, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: m_text
@@ -6114,6 +6102,18 @@ PrefabInstance:
       propertyPath: m_fontStyle
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
+        type: 3}
+    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb6d73d8bed5b394e8eb0c776eed2f3c, type: 3}
 --- !u!224 &1276870563 stripped
@@ -8310,10 +8310,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   userSettings: {fileID: 11400000, guid: d9ae5cd5342bb6f4680e2a02116626f8, type: 2}
+  clockToggle: {fileID: 0}
   soundToggle: {fileID: 1909720470}
   hintsToggle: {fileID: 1360019770}
   animationsToggle: {fileID: 102629590}
-  clockToggle: {fileID: 0}
 --- !u!1 &1772440926
 GameObject:
   m_ObjectHideFlags: 0
@@ -10099,18 +10099,6 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
-        type: 3}
-    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
-        type: 3}
     - target: {fileID: 4456343503280826139, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
         type: 3}
       propertyPath: m_text
@@ -10173,6 +10161,18 @@ PrefabInstance:
       propertyPath: m_fontStyle
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4456343504496620077, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6f6e2b22f1a79194ab07ca82a9d32ea0,
+        type: 3}
+    - target: {fileID: 4456343503775148081, guid: bb6d73d8bed5b394e8eb0c776eed2f3c,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9a63e30fec4b92b4ba07ebd998bce571,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb6d73d8bed5b394e8eb0c776eed2f3c, type: 3}
 --- !u!224 &2089010967 stripped

@@ -7,10 +7,12 @@ public class GameSettingsMenu : Menu
 
     [Space]
 
+    [SerializeField] Toggle clockToggle;
     [SerializeField] Toggle soundToggle;
     [SerializeField] Toggle hintsToggle;
     [SerializeField] Toggle animationsToggle;
-    [SerializeField] Toggle clockToggle;
+
+    public event System.Action ToggleClockAction;
 
     protected override void Awake()
     {
@@ -43,6 +45,7 @@ public class GameSettingsMenu : Menu
     public void OnToggleClock()
     {
         userSettings.clockOn = clockToggle.isOn;
+        ToggleClockAction?.Invoke();
     }
 
     public override void HandleBackButtonInput()
