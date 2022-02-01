@@ -18,6 +18,7 @@ public class ClockDisplay : MonoBehaviour
 
         gameSettingsMenu.ToggleClockAction += OnClockToggled;
         FindObjectOfType<PauseHandler>().GamePauseAction += OnGamePaused;
+        FindObjectOfType<GameController>().GameOverAction += OnGameOver;
     }
 
     void Start()
@@ -39,5 +40,10 @@ public class ClockDisplay : MonoBehaviour
     void OnGamePaused(bool state)
     {
         enabled = !state;
+    }
+
+    void OnGameOver()
+    {
+        enabled = false;
     }
 }

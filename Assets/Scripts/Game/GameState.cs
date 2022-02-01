@@ -207,6 +207,9 @@ public class GameState
                 }
             }
         }
+
+        if (state.validMoves.Count == 0)
+            state.IsGameOver = true;
     }
 
     public (int, int) GetCPUMove(int difficulty)
@@ -264,14 +267,16 @@ public class GameState
 
     int Minimax(GameState state, int depth, int alpha, int beta, bool maximizingPlayer)
     {
-        if (depth == 0 || IsGameOver)
+        if (depth == 0)
         {
             return state.Evaluation;
         }
 
-        if (state.validMoves.Count == 0)
+        GetValidMoves(state, !maximizingPlayer);
+
+        if (state.IsGameOver)
         {
-            GetValidMoves(state, !maximizingPlayer);
+            return state.Evaluation;
         }
 
         if (maximizingPlayer)

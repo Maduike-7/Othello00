@@ -21,10 +21,10 @@ public class GameSettingsMenu : Menu
 
     void InitOptions()
     {
-        hintsToggle.isOn = userSettings.hintsOn;
-        soundToggle.isOn = userSettings.soundOn;
-        animationsToggle.isOn = userSettings.animationsOn;
         clockToggle.isOn = userSettings.clockOn;
+        soundToggle.isOn = userSettings.soundOn;
+        hintsToggle.isOn = userSettings.hintsOn;
+        animationsToggle.isOn = userSettings.animationsOn;
     }
 
     public void OnToggleHints()
