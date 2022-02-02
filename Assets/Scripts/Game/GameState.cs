@@ -50,10 +50,8 @@ public class GameState
         }
     }
 
-    //to-do: impl. properly
     public bool IsGameOver;
 
-    //to-do: impl. properly
     public int Evaluation
     {
         get
