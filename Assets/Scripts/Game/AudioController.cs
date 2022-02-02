@@ -5,10 +5,13 @@ using static CoroutineHelper;
 
 public class AudioController : MonoBehaviour
 {
+    [SerializeField] UserSettings userSettings;
+
+    [Space]
+
     [SerializeField] AudioSource aux;
     [SerializeField] List<AudioClip> discPlaceSounds;
     [SerializeField] AudioClip discFlipSound;
-    int prevSoundIndex;
 
     void Awake()
     {
@@ -20,17 +23,9 @@ public class AudioController : MonoBehaviour
 
     void OnDiscPlace()
     {
-        int randIndex = Random.Range(0, discPlaceSounds.Count);
+        if (!userSettings.soundOn) return;
 
-        //continue randomizing randIndex if the same sound were to play twice in a row
-        while (randIndex == prevSoundIndex)
-        {
-            randIndex = Random.Range(0, discPlaceSounds.Count);
-        }
-        
-        aux.clip = discPlaceSounds[randIndex];
-        prevSoundIndex = randIndex;
-
+        aux.clip = discPlaceSounds[Random.Range(0, discPlaceSounds.Count)];
         aux.Play();
     }
 
@@ -45,6 +40,8 @@ public class AudioController : MonoBehaviour
     {
         yield return WaitForSeconds(delay);
         aux.clip = discFlipSound;
-        aux.Play();
+
+        if (userSettings.soundOn)
+            aux.Play();
     }
 }
