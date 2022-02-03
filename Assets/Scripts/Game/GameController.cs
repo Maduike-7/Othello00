@@ -171,8 +171,6 @@ public class GameController : MonoBehaviour
 
             //pass the turn over
             CurrentGameState.PassTurn();
-
-            if (!CurrentGameState.IsPlayerTurn) ClearConsole();
             CurrentGameState.GetValidMoves(CurrentGameState, CurrentGameState.IsPlayerTurn);
 
             if (CurrentGameState.validMoves.Count > 0)
@@ -256,13 +254,4 @@ public class GameController : MonoBehaviour
     {
         enabled = false;
     }
-
-    #region Debug
-    void ClearConsole()
-    {
-#if UNITY_EDITOR
-        System.Reflection.Assembly.GetAssembly(typeof(UnityEditor.SceneView)).GetType("UnityEditor.LogEntries").GetMethod("Clear").Invoke(new object(), null);
-#endif
-    }
-    #endregion
 }

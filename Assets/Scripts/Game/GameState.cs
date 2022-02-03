@@ -193,14 +193,6 @@ public class GameState
                     {
                         var boardCopy = TryMove(state, playerTurn, (row, col), flipDirections);
                         state.validMoves.Add(((row, col), boardCopy.Evaluation));
-
-                        //debug
-                        if (!playerTurn)
-                        {
-                            print("new future game state found.");
-                            PrintGameState(boardCopy);
-                        }
-
                     }
                 }
             }
@@ -234,7 +226,6 @@ public class GameState
             var newState = TryMove(this, false, move.coordinate, flipDirections);
 
             int evaluation = Minimax(newState, difficulty - 1, int.MinValue, int.MaxValue, false);
-            print($"static evaluation is {evaluation} if move is made at {move.coordinate}");
 
             if (evaluation <= minEvaluation)
             {
@@ -252,13 +243,11 @@ public class GameState
 
         if (possibleBestMoves.Count == 1)
         {
-            print($"best possible move is {bestMove}.");
             return bestMove;
         }
         else
         {
             int rand = Random.Range(0, possibleBestMoves.Count);
-            print($"randomly selected {possibleBestMoves[rand]} out of {possibleBestMoves.Count} possible best moves.");
             return possibleBestMoves[rand];
         }
     }
@@ -316,39 +305,4 @@ public class GameState
             return minEvaluation;
         }
     }
-
-    //debug
-    #region Console Logs
-    void PrintGameState(GameState state)
-    {
-        print("__________________");
-        for (int i = state.board.GetLength(0) - 1; i >= 0; i--)
-        {
-            string output = "";
-
-            for (int j = 0; j < state.board.GetLength(1); j++)
-            {
-                if (state.board[i, j] == 0)
-                {
-                    output += "_| ";
-                }
-                else if (state.board[i, j] == 1)
-                {
-                    output += "●| ";
-                }
-                else if (state.board[i, j] == -1)
-                {
-                    output += "○| ";
-                }
-            }
-
-            print(output);
-        }
-    }
-
-    void print(object msg)
-    {
-        Debug.Log(msg);
-    }
-    #endregion
 }
