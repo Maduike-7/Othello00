@@ -48,7 +48,7 @@ public class GameSettingsMenu : Menu
         ToggleClockAction?.Invoke();
     }
 
-    public override void HandleBackButtonInput()
+    public void HandleBackButtonInput()
     {
         userSettings.Save();
     }

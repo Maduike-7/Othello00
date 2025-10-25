@@ -38,7 +38,7 @@ public class PauseMenu : Menu
         settingsMenuPanel.SetActive(true);
     }
 
-    public override void HandleBackButtonInput()
+    public void HandleBackButtonInput()
     {
         pauseHandler.SetGamePaused(false);
     }

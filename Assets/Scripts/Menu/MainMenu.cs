@@ -10,9 +10,8 @@ public class MainMenu : Menu
         backgroundTransition = FindObjectOfType<BackgroundTransition>();
     }
 
-    protected override void Update()
+    void Update()
     {
-        base.Update();
         menuDisc.transform.Rotate(Vector3.up);
     }
 
@@ -29,7 +28,7 @@ public class MainMenu : Menu
     }
 
 #if UNITY_ANDROID
-    public override void HandleBackButtonInput()
+    public void HandleBackButtonInput()
     {
         AndroidJavaObject androidJavaObject = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
         androidJavaObject.Call<bool>("moveTaskToBack", true);
